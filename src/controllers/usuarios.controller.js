@@ -1,14 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { pool } = require("../config/dbConnect");
+const { queries } = require("../db/queries");
+
 const createUser = async (req, res) => {
     const { nombre, email, password } = req.body;
 
     try {
-        const existe = await pool.query(
-            "SELECT * FROM usuarios WHERE email=$1",
-            [email]
-        );
+        const existe = await pool.query(queries.findUserByEmail, [email]);
 
         if (existe.rows.length > 0) {
             return res
@@ -18,10 +17,12 @@ const createUser = async (req, res) => {
 
         const hashedPassword = bcrypt.hashSync(password, 10);
 
-        const result = await pool.query(
-            "INSERT INTO usuarios(nombre, email, contrasena, rol) VALUES($1, $2, $3, $4) RETURNING id_usuario, nombre, rol",
-            [nombre, email, hashedPassword, "user"]
-        );
+        const result = await pool.query(queries.insertUser, [
+            nombre,
+            email,
+            hashedPassword,
+            "user",
+        ]);
 
         const user = result.rows[0];
         const token = jwt.sign(
@@ -41,10 +42,7 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const result = await pool.query(
-            "SELECT * FROM usuarios WHERE email=$1",
-            [email]
-        );
+        const result = await pool.query(queries.findUserByEmail, [email]);
 
         const user = result.rows[0];
 
@@ -60,9 +58,6 @@ const loginUser = async (req, res) => {
             process.env.JWT_SECRET_KEY,
             { expiresIn: "12h" }
         );
-
-        //PRUEBA PARA RECIBIR EL TOKEN EN OTRAS RUTAS
-        res.cookie('token',token)
 
         const redirect = user.rol === "admin" ? "/movies" : "/dashboard";
 
