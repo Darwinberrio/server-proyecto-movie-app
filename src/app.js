@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 // Rutas
-//app.use('/',require("./routes/.route.js"));
+app.use('/',require("./routes/movies.route.js"));
 
 //listener
 app.listen(port, () => {

@@ -6,4 +6,13 @@ const pool = new Pool({
   connectionString,
 })
 
+//PRUEBA
+// const obtenerPeliculas=async()=>{
+//     const result=await pool.query('SELECT * FROM peliculas');
+//     console.log(result.rows);
+// }
+
+// obtenerPeliculas()
+
+
 module.exports={pool}
