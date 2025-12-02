@@ -81,44 +81,47 @@ const renewToken = (req, res) => {
     res.json({ ok: true, token });
 };
 
-const getAllFavs=async(req,res)=>{
-
+const getAllFavs = async (req, res) => {
     try {
-
         //CAPTURA TOKEN ALMACENADO EN COOKIES!!
-        const token =req.cookies.token; 
-        
-        console.log(token)
+        const token = req.cookies.token;
+
+        console.log(token);
         //const { id } = jwt.verify(token, process.env.JWT_SECRET_KEY);
         //console.log(id);
 
         //get favoritos by ID usuario
-        const resultFavoritos=await pool.query(queries.favoritosByID,[id]);
+        const resultFavoritos = await pool.query(queries.favoritosByID, [id]);
         //console.log(resultFavoritos.rows);
 
         return res.status(200).json({
-            ok:true,
-            msg:'Favoritos de usuario encontrados',
-            user:userExists,
-            favoritos:resultFavoritos.rows
+            ok: true,
+            msg: "Favoritos de usuario encontrados",
+            user: userExists,
+            favoritos: resultFavoritos.rows,
             //token:token
-        })
-
+        });
     } catch (error) {
-        console.log(error)
-    }   
-} 
+        console.log(error);
+    }
+};
 
 const rutaMovie = (req, res) => {
     const rol = req.tokenData.rol;
+
     if (rol === "admin") {
-        res.status(200).json({ok: true, message: "en movie como admin"});
+        return res
+            .status(200)
+            .json({ ok: true, message: "en movie como admin" });
     }
     if (rol === "user") {
-        getAllFavs(req, res);
+        //getAllFavs(req, res);
+        console.log("En ruta movie como user");
+
+        return res
+            .status(200)
+            .json({ ok: true, message: "en movie como user" });
     }
-    //return res.status(403).json({ ok: false, message: "Acceso denegado" });
 };
 
-
-module.exports = { createUser, loginUser, renewToken,getAllFavs,rutaMovie };
+module.exports = { createUser, loginUser, renewToken, getAllFavs, rutaMovie };
