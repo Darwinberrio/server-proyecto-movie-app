@@ -21,8 +21,20 @@ app.use(express.json());
 // Parsea datos de formularios (POST) hacia req.body.
 app.use(express.urlencoded());
 
-// Rutas
-app.use("/", usuariosRouter);
+
+//Templates
+app.set('view engine', 'ejs')
+app.set("views", __dirname + "/views");
+
+
+//middleware
+app.use(express.static(__dirname + "/public"))
+
+/* RUTAS */
+
+//uso de rutas servicios
+app.use('/',require("./routes/buscador.route.js"));
+
 
 //listener
 app.listen(port, () => {
