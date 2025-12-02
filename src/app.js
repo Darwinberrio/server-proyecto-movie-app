@@ -1,45 +1,29 @@
 //IMPORTACIONES de MODULOS externos
-const express = require('express');
-require('dotenv').config()
-const cors=require("cors")
-
-const {pool}=require('./config/dbConnect')
-const cookieParser = require('cookie-parser')
-
+const express = require("express");
+require("dotenv").config();
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 //IMPORTACIONES locales
-const app=express();
-const port=process.env.PORT;
-
+const app = express();
+const port = process.env.PORT;
 
 //MIDDLEWARE
-//app.use(cors());
+app.use(cors());
 
-app.use(cookieParser())
+app.use(cookieParser());
 
 //ayuda a leer el body de las peiticiones en formato JSON
 app.use(express.json());
 
 //parse application/X-ww-form-urlencoded
-//// Parsea datos de formularios (POST) hacia req.body.
+// Parsea datos de formularios (POST) hacia req.body.
 app.use(express.urlencoded());
 
-
-//Templates
-app.set('view engine', 'ejs')
-app.set("views", __dirname + "/views");
-
-
-//middleware
-app.use(express.static(__dirname + "/public"))
-
-/* RUTAS */
-
-//uso de rutas servicios
+// Rutas
 //app.use('/',require("./routes/.route.js"));
-
 
 //listener
 app.listen(port, () => {
-   console.log(`Servidor a la escucha del puerto ${port} `);
+    console.log(`Servidor a la escucha del puerto ${port} `);
 });
