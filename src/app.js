@@ -32,9 +32,10 @@ app.use(express.static(__dirname + "/public"))
 
 /* RUTAS */
 
-//uso de rutas servicios
-app.use('/',require("./routes/buscador.route.js"));
+app.use('/',usuariosRouter);
 
+// Rutas de usuarios
+// app.use('/usuarios', require('./routes/usuarios.route'));
 
 //listener
 app.listen(port, () => {

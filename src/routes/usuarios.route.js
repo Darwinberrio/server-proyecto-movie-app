@@ -7,7 +7,8 @@ const {
     createUser,
     loginUser,
     renewToken,
-    rutaMovie
+    rutaMovie,
+    busquedaPeliculas
 } = require("../controllers/usuarios.controller");
 
 router.get("/register", redireccionRol, (req, res) => res.render("register"));
@@ -27,5 +28,7 @@ router.get("/dashboard", validarJWT, verificarRol("user"), (req, res) =>
 );
 
 router.get("/movies", validarJWT, rutaMovie);
+
+router.get('/search', busquedaPeliculas);
 
 module.exports = router;
