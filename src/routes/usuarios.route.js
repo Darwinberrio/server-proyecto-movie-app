@@ -10,22 +10,25 @@ const {
     rutaMovie,
     deleteFavorito,
     addFavorito,
-    busquedaPeliculas
+    busquedaPeliculas,
 } = require("../controllers/usuarios.controller");
-
+const {
+    validarRegistro,
+    validarLogin,
+} = require("../validators/auth.validator");
+const { validarCampos } = require("../middlewares/validarCampos");
 
 /**FORMULARIO ACCESO */
 router.get("/register", redireccionRol, (req, res) => res.render("register"));
-router.post("/register", createUser);
+router.post("/register", [validarRegistro, validarCampos], createUser);
 
 router.get("/", redireccionRol, (req, res) => res.render("login"));
-router.post("/login", loginUser);
+router.post("/login", [validarLogin, validarCampos], loginUser);
 
 router.post("/logout", (req, res) =>
     res.json({ ok: true, message: "Cierre de sesión exitoso" })
 );
 /**FIN FORMULARIO ACCESO */
-
 
 /** USER*/
 
@@ -42,8 +45,7 @@ router.get("/movies", validarJWT, rutaMovie);
 router.delete("/movies/delete", validarJWT, deleteFavorito);
 router.post("/movies/add", validarJWT, addFavorito);
 
-router.get('/search', busquedaPeliculas);
+router.get("/search", busquedaPeliculas);
 /**FIN FAVORITOS(MOVIES) USER */
-
 
 module.exports = router;
