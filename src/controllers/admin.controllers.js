@@ -58,11 +58,118 @@ const crearPelicula = async (req, res) => {
         client.release();
     };
 };
-// Vista - formulario completo  con validación
 
 // OBTENER PELÍCULAS - /movies
+/**
+ * Función que recoge todas las películas para el admiistrador
+ * @param {Object} req 
+ * @param {Objetc} res 
+ * @returns Promise 
+ */
+const obtenerTodasPeliculas = async (req, res) => {
+    //Renderizar vista - Pendiente
+
+    // Conexión a la BBDD
+    let client;
+    // Datos
+    let result;
+
+    try {
+
+        // Conectar a la BBDD
+        client = await pool.connect();
+
+        // Capturar token admin en cookies o header
+        const token = req.cookies?.token || req.headers["authorization"]?.split(" ")[1];
+        //console.log(token)
+
+        // Obtener todas las películas
+        result = await client.query(queries.obtenerTodasPeliculas);
+
+        // Si no hay películas en tabla   
+        if(result.rows.length === 0) {
+            return res.status(404).json({
+                ok:false,
+                mensaje:'No hay películas para mostrar'
+            });
+        };
+
+        return res.status(200).json({
+            ok: true,
+            mensaje: "Se han encontrado todas las películas correctamente",
+            data: result
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            mensaje: "Ha habido un error, contacte con el administrador"
+        });
+
+    } finally {
+        client.release();
+    };
+};
 
 // OBTENER PELÍCULA POR ID
+const obtenerPeliculabyId = async (req, res) => {
+    // Conexión a la BBDD
+    let client;
+    // Datos
+    let result;
+
+    // Obtener id de params 
+    const {id} = req.params;
+
+    try {
+
+        // Conectar a la BBDD
+        client = await pool.connect();
+
+        // Capturar token admin en cookies o header
+        const token = req.cookies?.token || req.headers["authorization"]?.split(" ")[1];
+        //console.log(token)
+
+        // Obtener película por id
+        result = await client.query(queries.obtenerPeliculabyIdAdmin,[id]);
+        console.log(result);
+
+        // Si no encuentra la película
+        if(result.rows.length === 0) {
+            return res.status(404).json({
+                ok: false,
+                mensaje: "No se ha encontrado la película"
+            });
+        };
+
+        // Obtener datos de película
+        const {titulo, url_imagen, anio, director, genero, duracion} = result.rows[0];
+
+        // Si existe devolverla
+        return res.status(200).json({
+            ok: true,
+            mensaje: "La película se ha encontrado correctamente",
+            data: {
+                titulo,
+                url_imagen,
+                anio,
+                director,
+                genero,
+                duracion
+            }
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            mensaje: "Ha habido un error, contacte con el administrador"
+        });
+    } finally {
+        client.release();
+    };
+};
 
 // EDITAR PELÍCULA POR ID - /editMovie/:id
 /**
@@ -182,5 +289,7 @@ const eliminarPelícula = async (req, res) => {
 module.exports = {
     crearPelicula,
     editarPelícula,
-    eliminarPelícula
+    eliminarPelícula,
+    obtenerTodasPeliculas,
+    obtenerPeliculabyId
 };

@@ -1,6 +1,3 @@
-// IMPORTACIONES PROPIAS
-const { search } = require("../routes/usuarios.route");
-
 // QUERIES
 /**
  * Queries para la base de datos
@@ -11,18 +8,6 @@ const queries = {
     favoritosByUserId:"SELECT favoritos.id_favorito as id_favorito,favoritos.id_usuario as id_user,peliculas.id_pelicula as id_pelicula, peliculas.titulo as titulo,peliculas.anio as anio,peliculas.director as director,peliculas.genero as genero,peliculas.duracion as duracion FROM peliculas INNER JOIN favoritos ON peliculas.id_pelicula = favoritos.id_pelicula INNER JOIN usuarios ON favoritos.id_usuario = usuarios.id_usuario WHERE favoritos.id_usuario=$1",
 
     findUserbyID:'SELECT * FROM usuarios WHERE id_usuario=$1',
-
-    // INICIO QUERIES DE CRUD ADMIN
-    peliculaExiste: "SELECT * FROM peliculas WHERE titulo=$1 AND anio=$2",
-
-    crearPelicula: "INSERT INTO peliculas(titulo, id_imagen, anio, director, genero, duracion) VALUES($1, $2, $3, $4, $5, $6) RETURNING titulo, id_imagen, anio, director, genero, duracion",
-
-    actualizarPeliculaById: "UPDATE peliculas SET titulo = $1, url_imagen = $2, anio = $3, director = $4, genero = $5, duracion = $6 WHERE id_pelicula = $7 RETURNING titulo, url_imagen, anio, director, genero, duracion",
-
-    eliminarPeliculaTablaPeliculas: "DELETE FROM peliculas WHERE id_pelicula = $1",
-
-    eliminarPeliculaTablaFavoritos: "DELETE FROM favoritos WHERE id_pelicula = $1",
-    // FIN QUIERIES DE CRUD ADMIN
 
     findfavoritoByFavoritoId:"SELECT favoritos.id_favorito as id_favorito,favoritos.id_usuario as id_user,peliculas.titulo as titulo,peliculas.anio as anio,peliculas.director as director,peliculas.genero as genero,peliculas.duracion as duracion FROM peliculas INNER JOIN favoritos ON peliculas.id_pelicula = favoritos.id_pelicula INNER JOIN usuarios ON favoritos.id_usuario = usuarios.id_usuario WHERE favoritos.id_usuario=$1 AND favoritos.id_pelicula=$2",
 
@@ -42,7 +27,21 @@ const queries = {
 
     //fin queries favoritos
 
+    // INICIO QUERIES DE CRUD ADMIN
+    peliculaExiste: "SELECT * FROM peliculas WHERE titulo=$1 AND anio=$2",
 
+    crearPelicula: "INSERT INTO peliculas(titulo, url_imagen anio, director, genero, duracion) VALUES($1, $2, $3, $4, $5, $6) RETURNING titulo, id_imagen, anio, director, genero, duracion",
+
+    actualizarPeliculaById: "UPDATE peliculas SET titulo = $1, url_imagen = $2, anio = $3, director = $4, genero = $5, duracion = $6 WHERE id_pelicula = $7 RETURNING titulo, url_imagen, anio, director, genero, duracion",
+
+    eliminarPeliculaTablaPeliculas: "DELETE FROM peliculas WHERE id_pelicula = $1",
+
+    eliminarPeliculaTablaFavoritos: "DELETE FROM favoritos WHERE id_pelicula = $1",
+
+    obtenerTodasPeliculas: "SELECT * FROM peliculas",
+
+    obtenerPeliculabyIdAdmin: "SELECT * FROM peliculas WHERE id_pelicula = $1",
+    // FIN QUERIES DE CRUD ADMIN
 
     // Queries usadas en usuarios.controller
     findUserByEmail: "SELECT * FROM usuarios WHERE email=$1",
