@@ -123,7 +123,7 @@ const getAllFavoritos=async(req,res)=>{
             ok:true,
             msg:'Favoritos de usuario encontrados',
             favoritos:resultFavoritos.rows,
-            token:token
+            // token:token
         })
 
     } catch (error) {
@@ -284,18 +284,66 @@ const rutaMovie = (req, res) => {
 
 const busquedaPeliculas = async (req, res) => {
     try {
+
+        const token =req.cookies?.token || req.headers["authorization"]?.split(" ")[1];
+
         // Consulta SQL para obtener todas las películas
-        const query = 'SELECT titulo FROM peliculas';
-        // Ejecuta la consulta y obtiene los resultados
-        const { rows } = await pool.query(query);
-        // Responde con las películas en formato JSON
-        res.json({ peliculas : rows });
-    } catch (error) {
+        const nombre_pelicula=req.body.nombre_pelicula;       
+        const { rowCount, rows } = await pool.query(queries.searchPelicula,[nombre_pelicula]);
+        console.log(rows);
+         if(rowCount===0){
+            return res.status(404).json({ //404 NOT FOUND. El servidor no pudo encontrar el contenido solicitado
+                ok:false,
+                msg:'No hemos encontrado ninguna pelicula con ese nombre'
+            })
+        }
+         return res.status(200).json({
+            ok:true,
+            msg:'Favoritos de usuario encontrados',
+            peliculas : rows,
+            token:token
+        })
+    }catch (error) {
         // Muestra el error en consola y responde con un error 500
         console.log(error);
         res.status(500).json({ error: 'Error al obtener las películas' });
     }
-};
+}
+
+
+const buscarPeliculasById = async (req, res) => {
+    try {
+
+        const token =req.cookies?.token || req.headers["authorization"]?.split(" ")[1];
+
+        // Consulta SQL para obtener todas las películas
+        const id_pelicula=req.body.id_pelicula;          
+        const findPeliculaById=await pool.query(queries.findPeliculabyId,[id_pelicula]);
+        
+        if(findPeliculaById.rowCount===0){
+            return res.status(404).json({ //404 NOT FOUND. El servidor no pudo encontrar el contenido solicitado
+                ok:false,
+                msg:'Los detalles de esta pelicula no existen'
+            })
+        }
+
+        const { rowCount, rows } = await pool.query(queries.detalleById,[id_pelicula]);
+
+         return res.status(200).json({
+            ok:true,
+            msg:'Favoritos de usuario encontrados',
+            pelicula : rows,
+            token:token
+        })
+    }catch (error) {
+        // Muestra el error en consola y responde con un error 500
+        console.log(error);
+        res.status(500).json({ error: 'Error al obtener las películas' });
+    }
+}
+
+
+
 
 module.exports = { 
     createUser,
@@ -304,5 +352,6 @@ module.exports = {
     rutaMovie,
     deleteFavorito,
     addFavorito,
-    busquedaPeliculas
+    busquedaPeliculas,
+    buscarPeliculasById
 };

@@ -11,6 +11,7 @@ const {
     deleteFavorito,
     addFavorito,
     busquedaPeliculas,
+    buscarPeliculasById
 } = require("../controllers/usuarios.controller");
 const {
     validarRegistro,
@@ -45,7 +46,9 @@ router.get("/movies", validarJWT, rutaMovie);
 router.delete("/movies/delete", validarJWT, deleteFavorito);
 router.post("/movies/add", validarJWT, addFavorito);
 
-router.get("/search", busquedaPeliculas);
+router.get('/search', busquedaPeliculas);
+
+router.get('/movies/detailsMovie', buscarPeliculasById);
 /**FIN FAVORITOS(MOVIES) USER */
 
 module.exports = router;

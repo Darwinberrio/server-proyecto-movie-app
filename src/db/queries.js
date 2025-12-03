@@ -1,8 +1,9 @@
+const { search } = require("../routes/usuarios.route");
+
 const queries = {
 
     //Queries favoritos
-    favoritosByUserId:
-        "SELECT favoritos.id_favorito as id_favorito,favoritos.id_usuario as id_user,peliculas.id_pelicula as id_pelicula, peliculas.titulo as titulo,peliculas.anio as anio,peliculas.director as director,peliculas.genero as genero,peliculas.duracion as duracion FROM peliculas INNER JOIN favoritos ON peliculas.id_pelicula = favoritos.id_pelicula INNER JOIN usuarios ON favoritos.id_usuario = usuarios.id_usuario WHERE favoritos.id_usuario=$1",
+    favoritosByUserId:"SELECT favoritos.id_favorito as id_favorito,favoritos.id_usuario as id_user,peliculas.id_pelicula as id_pelicula, peliculas.titulo as titulo,peliculas.anio as anio,peliculas.director as director,peliculas.genero as genero,peliculas.duracion as duracion FROM peliculas INNER JOIN favoritos ON peliculas.id_pelicula = favoritos.id_pelicula INNER JOIN usuarios ON favoritos.id_usuario = usuarios.id_usuario WHERE favoritos.id_usuario=$1",
 
     findUserbyID:'SELECT * FROM usuarios WHERE id_usuario=$1',
 
@@ -30,6 +31,9 @@ const queries = {
 
     findUserbyID: "SELECT * FROM usuarios WHERE id_usuario=$1",
 
+    searchPelicula: "SELECT peliculas.id_imagen, peliculas.titulo,peliculas.anio,peliculas.director, peliculas,genero,peliculas.duracion, imagenes.originalname FROM peliculas INNER JOIN imagenes ON peliculas.id_imagen = imagenes.id_imagen WHERE peliculas.titulo=$1",
+
+    detalleById:"SELECT peliculas.id_imagen, peliculas.titulo,peliculas.anio,peliculas.director, peliculas,genero,peliculas.duracion, imagenes.originalname FROM peliculas INNER JOIN imagenes ON peliculas.id_imagen = imagenes.id_imagen WHERE peliculas.id_pelicula=$1",
 
     addFavorito: "INSERT INTO favoritos (id_usuario, id_pelicula) VALUES ($1, $2)",
 
