@@ -282,7 +282,20 @@ const rutaMovie = (req, res) => {
 };
 //FIN MOVIES
 
-
+const busquedaPeliculas = async (req, res) => {
+    try {
+        // Consulta SQL para obtener todas las películas
+        const query = 'SELECT titulo FROM peliculas';
+        // Ejecuta la consulta y obtiene los resultados
+        const { rows } = await pool.query(query);
+        // Responde con las películas en formato JSON
+        res.json({ peliculas : rows });
+    } catch (error) {
+        // Muestra el error en consola y responde con un error 500
+        console.log(error);
+        res.status(500).json({ error: 'Error al obtener las películas' });
+    }
+};
 
 module.exports = { 
     createUser,
@@ -290,5 +303,6 @@ module.exports = {
     renewToken,
     rutaMovie,
     deleteFavorito,
-    addFavorito 
+    addFavorito,
+    busquedaPeliculas
 };

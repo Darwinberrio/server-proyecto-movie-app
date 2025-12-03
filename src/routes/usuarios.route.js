@@ -9,7 +9,8 @@ const {
     renewToken,
     rutaMovie,
     deleteFavorito,
-    addFavorito 
+    addFavorito,
+    busquedaPeliculas
 } = require("../controllers/usuarios.controller");
 
 
