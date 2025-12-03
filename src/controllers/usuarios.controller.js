@@ -326,7 +326,7 @@ const busquedaPeliculas = async (req, res) => {
         }
          return res.status(200).json({
             ok:true,
-            msg:'Favoritos de usuario encontrados',
+            msg:'pelicula encontrada',
             peliculas : rows,
             token:token
         })
@@ -363,7 +363,7 @@ const buscarPeliculasById = async (req, res) => {
 
          return res.status(200).json({
             ok:true,
-            msg:'Favoritos de usuario encontrados',
+            msg:'Pelicula encontrada',
             pelicula : rows,
             token:token
         })

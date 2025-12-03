@@ -50,9 +50,9 @@ router.get("/movies", validarJWT, rutaMovie);
 router.delete("/movies/delete", validarJWT, deleteFavorito);
 router.post("/movies/add", validarJWT, addFavorito);
 
-router.get('/search', busquedaPeliculas);
+router.get('/search', validarJWT, busquedaPeliculas);
 
-router.get('/movies/detailsMovie', buscarPeliculasById);
+router.get('/movies/detailsMovie', validarJWT, buscarPeliculasById);
 /**FIN FAVORITOS(MOVIES) USER */
 
 // EXPORTAR RUTAS
