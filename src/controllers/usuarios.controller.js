@@ -1,15 +1,14 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { pool } = require("../config/dbConnect");
+const { queries } = require("../db/queries");
 
+//FORMULARIO ACCESO
 const createUser = async (req, res) => {
     const { nombre, email, password } = req.body;
 
     try {
-        const existe = await pool.query(
-            "SELECT * FROM usuarios WHERE email=$1",
-            [email]
-        );
+        const existe = await pool.query(queries.findUserByEmail, [email]);
 
         if (existe.rows.length > 0) {
             return res
@@ -19,10 +18,12 @@ const createUser = async (req, res) => {
 
         const hashedPassword = bcrypt.hashSync(password, 10);
 
-        const result = await pool.query(
-            "INSERT INTO usuarios(nombre, email, contrasena, rol) VALUES($1, $2, $3, $4) RETURNING id_usuario, nombre, rol",
-            [nombre, email, hashedPassword, "user"]
-        );
+        const result = await pool.query(queries.insertUser, [
+            nombre,
+            email,
+            hashedPassword,
+            "user",
+        ]);
 
         const user = result.rows[0];
         const token = jwt.sign(
@@ -42,13 +43,11 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const result = await pool.query(
-            "SELECT * FROM usuarios WHERE email=$1",
-            [email]
-        );
+        const result = await pool.query(queries.findUserByEmail, [email]);
 
         const user = result.rows[0];
 
+        console.log(result.rows);
         if (!user || !(await bcrypt.compare(password, user.contrasena))) {
             return res
                 .status(400)
@@ -61,7 +60,7 @@ const loginUser = async (req, res) => {
             { expiresIn: "12h" }
         );
 
-        const redirect = user.role === "admin" ? "/movies" : "/dashboard";
+        const redirect = user.rol === "admin" ? "/movies" : "/dashboard";
 
         res.json({ ok: true, token, redirect });
     } catch (error) {
@@ -83,4 +82,227 @@ const renewToken = (req, res) => {
     res.json({ ok: true, token });
 };
 
-module.exports = { createUser, loginUser, renewToken };
+//FORMULARIO ACCESO
+
+
+//MOVIES USER
+
+/**
+ * Funcion que obtiene todos las peliculas favoritas de un usuario
+ * @param {} req requerimiento
+ * @param {*} res respuesta
+ * @returns respuesta exito 200 con array de peliculas favoritas o error 500 si el usuario no tiene peliculas favoritas
+ */
+const getAllFavoritos=async(req,res)=>{
+
+    try {
+
+        //captura token almacenado en cookies o header
+        const token =req.cookies?.token || req.headers["authorization"]?.split(" ")[1];
+        
+        //VER TOKEN
+        //console.log(token)
+
+        //VERIFICAR TOKEN Y EXTRAER ID USUARIO
+        const {uid} = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+        //COMPROBAR UID
+        //console.log(uid);
+
+        //get favoritos by ID usuario
+        const resultFavoritos=await pool.query(queries.favoritosByUserId,[uid]);
+        
+        if(resultFavoritos.rowCount===0){
+            return res.status(404).json({ //404 NOT FOUND. El servidor no pudo encontrar el contenido solicitado
+                ok:false,
+                msg:'No tienes favoritos guardados'
+            })
+        }
+
+        return res.status(200).json({
+            ok:true,
+            msg:'Favoritos de usuario encontrados',
+            favoritos:resultFavoritos.rows,
+            token:token
+        })
+
+    } catch (error) {
+        console.log(error)
+    }   
+} 
+
+/**
+ * Funcion que elimina un favorito recibido por formulario
+ * @param {} req requerimiento
+ * @param {*} res respuesta
+ * @returns respuesta de exito 200 o error 404 si no existe el favorito a borrar
+ */
+const deleteFavorito=async(req,res)=>{
+
+    try {
+
+        //captura token almacenado en cookies o header
+        const token =req.cookies?.token || req.headers["authorization"]?.split(" ")[1];
+        
+        //ver token en consola
+        //console.log(token)
+
+        //VERIFICAR TOKEN Y EXTRAER ID USUARIO para usarlo en el delete
+        const {uid} = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+        //ver ID_usuario en consola
+        console.log("UID usuario:",uid);
+
+        //captura id favorito que llega por BODY(formulario)
+        const id_favorito=req.body.id_favorito;
+
+        //ver id favorito en consola
+        console.log("ID favorito:",id_favorito)
+
+        const favoritoByFavoritoId=await pool.query(queries.findfavoritoByFavoritoId2,[uid,id_favorito]);
+        
+        console.log(favoritoByFavoritoId.rowCount)
+        if(favoritoByFavoritoId.rowCount===0){
+            return res.status(404).json({ //404 NOT FOUND. El servidor no pudo encontrar el contenido solicitado
+                ok:false,
+                msg:'Pelicula a borrar no existe en tus  favoritos'
+            })
+        }
+        //DELETE favoritos by ID usuario y ID favorito
+        const deleteFavorito=await pool.query(queries.deleteFavorito,[uid,id_favorito]);
+        
+        //imprime por consola el objeto borrado en la base de datos
+        console.log(favoritoByFavoritoId.rows)
+
+        return res.status(200).json({
+            ok:true,
+            msg:'Pelicula borrada correctamente',
+            favoritoBorrado:favoritoByFavoritoId.rows,
+            token:token
+        })
+
+    } catch (error) {
+        console.log(error)
+    }   
+} 
+
+/**
+ * Funcion que añade un favorito recibido por formulario
+ * @param {*} req requerimiento
+ * @param {*} res respuesta 
+ * @returns respuesta de exito 200 o error 404 si la pelicula a añadir ya existe como favorita
+ */
+const addFavorito=async(req,res)=>{
+
+    try {
+
+        //captura token almacenado en cookies o header
+        const token =req.cookies?.token || req.headers["authorization"]?.split(" ")[1];
+        
+        //ver token en consola
+        //console.log(token)
+
+        //VERIFICAR TOKEN Y EXTRAER ID USUARIO para usarlo en el delete
+        const {uid} = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+        //ver ID_usuario en consola
+        //console.log("UID usuario:",uid);
+
+        //captura id favorito que llega por BODY(formulario)
+        const id_pelicula=req.body.id_pelicula;
+
+        //ver id favorito en consola
+        //console.log("ID pelicula:",id_pelicula)
+
+
+        //comprobacion para ver si el id existe
+        const findPeliculaById=await pool.query(queries.findPeliculabyId,[id_pelicula]);
+        
+        if(findPeliculaById.rowCount===0){
+            return res.status(404).json({ //404 NOT FOUND. El servidor no pudo encontrar el contenido solicitado
+                ok:false,
+                msg:'La pelicula a guardar no existe'
+            })
+        }
+
+        const findfavoritoByFavoritoId=await pool.query(queries.findfavoritoByFavoritoId,[uid,id_pelicula]);
+        
+        //comprobar si la pelicula ya existe en favoritos
+        //console.log(findfavoritoByFavoritoId.rowCount)
+
+        if(findfavoritoByFavoritoId.rowCount==1){
+            return res.status(406).json({ //406 NOT ACCEPTABLE. El servidor no puede procesar la solicitud debido a algo que es percibido como un error del cliente
+                ok:false,
+                msg:'La pelicula ya existe en tus favoritos'
+            })
+        }
+
+        //AÑADE favoritos
+        const addFavorito=await pool.query(queries.addFavorito,[uid,id_pelicula]);
+        
+        //imprime por consola el objeto borrado en la base de datos
+        console.log(addFavorito.rows)
+
+        return res.status(200).json({
+            ok:true,
+            msg:'Pelicula añadida correctamente a tus favoritos',
+            favorito:findPeliculaById.rows,
+            token:token
+        })
+
+    } catch (error) {
+        console.log(error)
+    }   
+} 
+
+/**
+ * funcion que redirige a la ruta movies dependiendo del rol del usuario
+ * @param {*} req requerimiento
+ * @param {*} res respuesta
+ * @returns 
+ */
+const rutaMovie = (req, res) => {
+    const rol = req.tokenData.rol;
+
+
+    if (rol === "admin") {
+        return res
+            .status(200)
+            .json({ ok: true, message: "en movie como admin" });
+    }
+    if (rol === "user") {
+       //res.status(200).json({ok: true, message: "en movie como user"});
+
+       //si el el rol es user pasa a ejecutar la funcion getAllFavoritos
+        return getAllFavoritos(req,res);
+    }
+
+    //si no se obtiene ningun rol valido
+    return res.status(403).json({ ok: false, message: "Acceso denegado" });
+};
+//FIN MOVIES
+
+const busquedaPeliculas = async (req, res) => {
+    try {
+        // Consulta SQL para obtener todas las películas
+        const query = 'SELECT titulo FROM peliculas';
+        // Ejecuta la consulta y obtiene los resultados
+        const { rows } = await pool.query(query);
+        // Responde con las películas en formato JSON
+        res.json({ peliculas : rows });
+    } catch (error) {
+        // Muestra el error en consola y responde con un error 500
+        console.log(error);
+        res.status(500).json({ error: 'Error al obtener las películas' });
+    }
+};
+
+module.exports = { 
+    createUser,
+    loginUser,
+    renewToken,
+    rutaMovie,
+    deleteFavorito,
+    addFavorito,
+    busquedaPeliculas
+};

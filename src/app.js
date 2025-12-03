@@ -26,6 +26,21 @@ app.use(express.urlencoded());
 app.use("/", usuariosRouter);
 app.use("/movies", adminRouter);
 
+//Templates
+app.set('view engine', 'ejs')
+app.set("views", __dirname + "/views");
+
+
+//middleware
+app.use(express.static(__dirname + "/public"))
+
+/* RUTAS */
+
+app.use('/',usuariosRouter);
+
+// Rutas de usuarios
+// app.use('/usuarios', require('./routes/usuarios.route'));
+
 //listener
 app.listen(port, () => {
     console.log(`Servidor a la escucha del puerto ${port} `);
