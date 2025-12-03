@@ -1,5 +1,14 @@
+// IMPORTACIONES DE TERCEROS
 const jwt = require("jsonwebtoken");
 
+// FUNCIONES MIDDLEWARE
+/**
+ * Función que redirige a los usuarios según el rol del usuario
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Function} next 
+ * @returns Usuario con rol User redirige a ruta /movies o usuario con rol Admin redirige a /dashboard
+ */
 const redireccionRol = (req, res, next) => {
     const authHeader = req.headers["authorization"];
     if (!authHeader) return next();
@@ -17,4 +26,5 @@ const redireccionRol = (req, res, next) => {
     }
 };
 
+// EXPORTAR FUNCIONES
 module.exports = { redireccionRol };

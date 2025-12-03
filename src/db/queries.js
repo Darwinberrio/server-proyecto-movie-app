@@ -1,5 +1,10 @@
+// IMPORTACIONES PROPIAS
 const { search } = require("../routes/usuarios.route");
 
+// QUERIES
+/**
+ * Queries para la base de datos
+ */
 const queries = {
 
     //Queries favoritos
@@ -50,4 +55,5 @@ const queries = {
     // Fin de queries usadas en usuarios.controller
 };
 
+// EXPORTAR QUERIES
 module.exports = { queries };

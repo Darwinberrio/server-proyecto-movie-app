@@ -11,7 +11,7 @@ const { validarCampos } = require("../middlewares/validarCampos");
 const {crearPelicula, editarPelícula, eliminarPelícula} = require('../controllers/admin.controllers');
 
 // MIDDLEWARES DE COMPROBACIÓN
-//Comprobar año película
+//Comprobar año y nombre de película
 const {comprobarNombreYAnioPelicula} = require("../middlewares/comprobarnombreanopelicula")
 
 // CREAR PELÍCULA - /createMovie
@@ -27,4 +27,5 @@ router.put('/editmovie/:id', [validarEditarPelicula, validarCampos], editarPelí
 // BORRAR PELÍCULA POR ID
 router.delete('/removemovie/:id', eliminarPelícula);
 
+// EXPORTAR RUTAS
 module.exports = router;

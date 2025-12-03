@@ -1,3 +1,4 @@
+// IMPORTACIONES DE TERCEROS
 const jwt = require("jsonwebtoken");
 
 /**
@@ -39,4 +40,5 @@ const validarJWT = (req, res, next) => {
     }
 };
 
+// EXPORTAR FUNCIONES
 module.exports = { validarJWT };

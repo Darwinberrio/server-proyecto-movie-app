@@ -1,5 +1,12 @@
+// EXPORTACIONES DE TERCEROS
 const { check } = require("express-validator");
 
+// EXPORTACIONES PROPIAS
+
+// VALIDADORES
+/**
+ * Validadores de campos para crear películas
+ */
 const validarCrearPelicula = [
     check("titulo")
     .notEmpty().withMessage("El campo título no puede estar vacío"),
@@ -18,6 +25,9 @@ const validarCrearPelicula = [
     .isNumeric().withMessage("El campo duración no puede contener letras")
 ];
 
+/**
+ * Validadores de campos para editar películas
+ */
 const validarEditarPelicula = [
     check("titulo")
     .notEmpty().withMessage("El campo título no puede estar vacío"),
@@ -36,4 +46,5 @@ const validarEditarPelicula = [
     .isNumeric().withMessage("El campo duración no puede contener letras")
 ];
 
+// EXPORTAR VALIDADORES
 module.exports = {validarCrearPelicula, validarEditarPelicula};

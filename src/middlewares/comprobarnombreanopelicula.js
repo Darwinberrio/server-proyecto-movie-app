@@ -4,6 +4,14 @@ const {pool} = require('../config/dbConnect');
 // REQUERIMIENTOS PROPIOS
 const {queries} = require('../db/queries');
 
+// MIDDLEWARES
+/**
+ * Función que comprueba el título y año de una película en la tabla películas antes de crearla
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Metodo} next 
+ * @returns Promise - Comprueba si la película ya existe en la tabla películas y pasa al siguiente middleware o devuelve errores (500 o 400)
+ */
 const comprobarNombreYAnioPelicula = async (req, res, next) => {
     // Acceso a BBDD
     let client;
@@ -44,6 +52,7 @@ const comprobarNombreYAnioPelicula = async (req, res, next) => {
     }
 };
 
+// EXPORTAR MIDDLEWARES
 module.exports = {comprobarNombreYAnioPelicula};
 
 

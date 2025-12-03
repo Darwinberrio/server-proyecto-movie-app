@@ -1,5 +1,8 @@
+// IMPORTACIONES DE TERCEROS
 const express = require("express");
 const router = express.Router();
+
+// IMPORTACIONES PROPIAS
 const { validarJWT } = require("../middlewares/validarJWT");
 const { redireccionRol } = require("../middlewares/redireccionRol");
 const { verificarRol } = require("../middlewares/verificarRol");
@@ -19,6 +22,7 @@ const {
 } = require("../validators/auth.validator");
 const { validarCampos } = require("../middlewares/validarCampos");
 
+// RUTAS
 /**FORMULARIO ACCESO */
 router.get("/register", redireccionRol, (req, res) => res.render("register"));
 router.post("/register", [validarRegistro, validarCampos], createUser);
@@ -51,4 +55,5 @@ router.get('/search', busquedaPeliculas);
 router.get('/movies/detailsMovie', buscarPeliculasById);
 /**FIN FAVORITOS(MOVIES) USER */
 
+// EXPORTAR RUTAS
 module.exports = router;

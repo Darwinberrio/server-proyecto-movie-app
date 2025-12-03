@@ -1,9 +1,18 @@
+// EXPORTACIONES DE TERCEROS
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { pool } = require("../config/dbConnect");
+
+// EXPORTACIONES PROPIAS
 const { queries } = require("../db/queries");
 
 //FORMULARIO ACCESO
+/**
+ * Función que crea nuevos usuarios User
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns Promise - Crea nuevos usuarios User o devuelve errores (500 o 400)
+ */
 const createUser = async (req, res) => {
     const { nombre, email, password } = req.body;
 
@@ -39,6 +48,12 @@ const createUser = async (req, res) => {
     }
 };
 
+/**
+ * Función que permite a un usuario iniciar sesión
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns Promise - Los usuarios ya registrados pueden iniciar sesión o devuelve errores (500 o 400)
+ */
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
@@ -69,6 +84,12 @@ const loginUser = async (req, res) => {
     }
 };
 
+/**
+ * Función que renueva el token de un usuario autenticado
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns Renovación del token
+ */
 const renewToken = (req, res) => {
     const token = jwt.sign(
         {
@@ -282,6 +303,12 @@ const rutaMovie = (req, res) => {
 };
 //FIN MOVIES
 
+/**
+ * Función que busca películas por nombre
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns Promise - Busca películas por nombre y devuelve resultados o errores (500 o 404)
+ */
 const busquedaPeliculas = async (req, res) => {
     try {
 
@@ -310,7 +337,12 @@ const busquedaPeliculas = async (req, res) => {
     }
 }
 
-
+/**
+ * Función que busca películas por ID
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns Promise - Busca películas por ID y devuelve resultados o errores (500 o 404)
+ */
 const buscarPeliculasById = async (req, res) => {
     try {
 
@@ -342,9 +374,7 @@ const buscarPeliculasById = async (req, res) => {
     }
 }
 
-
-
-
+// EXPORTAR FUNCIONES CONTROLADORAS
 module.exports = { 
     createUser,
     loginUser,

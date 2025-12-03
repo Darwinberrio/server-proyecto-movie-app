@@ -6,6 +6,12 @@ const {queries} = require('../db/queries');
 
 // PENDIENTE MULTER IMÁGENES
 // CREAR PELÍCULA - /createMovie
+/**
+ * Función que para crear películas
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns Promise - Crea la película en la tabla películas o devuelve errores (500 o 404)
+ */
 const crearPelicula = async (req, res) => {
     //Renderizar vista - Pendiente
 
@@ -59,6 +65,12 @@ const crearPelicula = async (req, res) => {
 // OBTENER PELÍCULA POR ID
 
 // EDITAR PELÍCULA POR ID - /editMovie/:id
+/**
+ * Función que edita una película por su ID
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns Promise - Edita la película en la tabla películas y tabla favoritos o devuelve errores (500 o 404)
+ */
 const editarPelícula = async (req, res) => {
     // Renderizar vista - Pendiente
 
@@ -110,6 +122,12 @@ const editarPelícula = async (req, res) => {
 };
 
 // BORRAR PELÍCULA POR ID - /removieMovie
+/**
+ * Función que elimina una película por su ID
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns Promise - Elimina la película en la tabla películas y tabla favoritos o devuelve errores (500 o 404)
+ */
 const eliminarPelícula = async (req, res) => {
     // Renderizar vista - Pendiente
 
@@ -160,6 +178,7 @@ const eliminarPelícula = async (req, res) => {
     };
 };
 
+// EXPORTAR FUNCIONES CONTROLADORAS
 module.exports = {
     crearPelicula,
     editarPelícula,
