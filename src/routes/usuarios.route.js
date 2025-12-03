@@ -7,9 +7,13 @@ const {
     createUser,
     loginUser,
     renewToken,
-    rutaMovie
+    rutaMovie,
+    deleteFavorito,
+    addFavorito 
 } = require("../controllers/usuarios.controller");
 
+
+/**FORMULARIO ACCESO */
 router.get("/register", redireccionRol, (req, res) => res.render("register"));
 router.post("/register", createUser);
 
@@ -19,6 +23,10 @@ router.post("/login", loginUser);
 router.post("/logout", (req, res) =>
     res.json({ ok: true, message: "Cierre de sesión exitoso" })
 );
+/**FIN FORMULARIO ACCESO */
+
+
+/** USER*/
 
 router.get("/renew", validarJWT, renewToken);
 
@@ -26,6 +34,14 @@ router.get("/dashboard", validarJWT, verificarRol("user"), (req, res) =>
     res.json({ ok: true, message: "Bienvenido a dashboard" })
 );
 
+/** FIN USER*/
+
+/** FAVORITOS(MOVIES) USER */
 router.get("/movies", validarJWT, rutaMovie);
+router.delete("/movies/delete", validarJWT, deleteFavorito);
+router.post("/movies/add", validarJWT, addFavorito);
+
+/**FIN FAVORITOS(MOVIES) USER */
+
 
 module.exports = router;
