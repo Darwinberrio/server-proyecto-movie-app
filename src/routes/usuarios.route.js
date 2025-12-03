@@ -41,6 +41,7 @@ router.get("/movies", validarJWT, rutaMovie);
 router.delete("/movies/delete", validarJWT, deleteFavorito);
 router.post("/movies/add", validarJWT, addFavorito);
 
+router.get('/search', busquedaPeliculas);
 /**FIN FAVORITOS(MOVIES) USER */
 
 

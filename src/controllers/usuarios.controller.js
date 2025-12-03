@@ -264,8 +264,11 @@ const addFavorito=async(req,res)=>{
 const rutaMovie = (req, res) => {
     const rol = req.tokenData.rol;
 
+
     if (rol === "admin") {
-        res.status(200).json({ok: true, message: "en movie como admin"});
+        return res
+            .status(200)
+            .json({ ok: true, message: "en movie como admin" });
     }
     if (rol === "user") {
        //res.status(200).json({ok: true, message: "en movie como user"});
