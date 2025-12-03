@@ -10,7 +10,8 @@ const {
     rutaMovie,
     deleteFavorito,
     addFavorito,
-    busquedaPeliculas
+    busquedaPeliculas,
+    buscarPeliculasById
 } = require("../controllers/usuarios.controller");
 
 
@@ -43,6 +44,8 @@ router.delete("/movies/delete", validarJWT, deleteFavorito);
 router.post("/movies/add", validarJWT, addFavorito);
 
 router.get('/search', busquedaPeliculas);
+
+router.get('/movies/detailsMovie', buscarPeliculasById);
 /**FIN FAVORITOS(MOVIES) USER */
 
 
