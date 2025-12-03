@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 //IMPORTACIONES locales
 const app = express();
 const usuariosRouter = require("./routes/usuarios.route");
+const adminRouter = require("./routes/admin.route");
 const port = process.env.PORT;
 
 //MIDDLEWARE
@@ -23,6 +24,7 @@ app.use(express.urlencoded());
 
 // Rutas
 app.use("/", usuariosRouter);
+app.use("/movies", adminRouter);
 
 //listener
 app.listen(port, () => {
