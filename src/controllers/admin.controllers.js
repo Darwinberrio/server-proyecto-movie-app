@@ -1,10 +1,10 @@
 // REQUERIMIENTOS DE TERCEROS
+const {pool} = require('../config/dbConnect');
 
 // REQUERIMIENTOS PROPIOS
-const {pool} = require('../config/dbConnect');
 const {queries} = require('../db/queries');
-const {crearImagenPelicula} = require('../helpers/crearimagenpelicula');
 
+// PENDIENTE MULTER IMÁGENES
 // CREAR PELÍCULA - /createMovie
 const crearPelicula = async (req, res) => {
     //Renderizar vista - Pendiente
@@ -15,7 +15,7 @@ const crearPelicula = async (req, res) => {
     let result;
 
     // Capturar los elementos deseados - data de la película
-    const {titulo, id_imagen, anio, director, genero, duracion} = req.body;
+    const {titulo, url_imagen, anio, director, genero, duracion} = req.body;
     //console.log(req.body);
 
     try{
@@ -25,9 +25,6 @@ const crearPelicula = async (req, res) => {
         // Comprobar si la película existe o no a través de título y año 
         const peliculaExiste = await client.query(queries.peliculaExiste,[titulo, anio]);
 
-        crearPelicula;
-        //console.log(crearPelicula)
-
         if (peliculaExiste.rows.length > 0) {
             return res.status(400).json({ 
                 ok: false, 
@@ -35,9 +32,8 @@ const crearPelicula = async (req, res) => {
             });
         };
 
-        // Crear primero la imagen (helper) - Capturar el id y pasarlo como argumento return id imagen
         // Si no existe la película crearla
-        result = await client.query(queries.crearPelicula,[titulo, id_imagen, anio, director, genero, duracion]);
+        result = await client.query(queries.crearPelicula,[titulo, url_imagen, anio, director, genero, duracion]);
 
         return res.status(201).json({
             ok: true,
@@ -53,7 +49,7 @@ const crearPelicula = async (req, res) => {
         });
 
     } finally {
-        if (client) client.release();
+        client.release();
     };
 };
 // Vista - formulario completo  con validación
@@ -63,7 +59,6 @@ const crearPelicula = async (req, res) => {
 // OBTENER PELÍCULA POR ID
 
 // EDITAR PELÍCULA POR ID - /editMovie/:id
-// SI QUIERES CAMBIAR LA IMAGEN??
 const editarPelícula = async (req, res) => {
     // Renderizar vista - Pendiente
 
@@ -74,20 +69,28 @@ const editarPelícula = async (req, res) => {
 
     // Capturar id
     const {id} = req.params;
-     // Pendiente poner confirmación si existe película 
+
     try {
         // Conectar a la BBDD
         client = await pool.connect();
 
-        // Como la película ya existe, editarla
+        // Comprobar si la película existe o no a través de id
+        const peliculaExisteEditar = await client.query(queries.peliculaExisteById,[id]); 
+
+        if (!id || peliculaExisteEditar.rows.length === 0) {
+            return res.status(404).json({
+                ok: false,
+                mensaje: "No se puede editar la película porque no existe"
+            });
+        };
+
         // Capturar los elementos deseados - data de la película
-        const {titulo, id_imagen, anio, director, genero, duracion} = req.body;
-        //console.log(titulo, id_imagen, anio, director, genero, duracion);
+        const {titulo, url_imagen, anio, director, genero, duracion} = req.body;
+        //console.log(titulo, url_imagen, anio, director, genero, duracion);
 
-        result = await client.query(queries.actualizarPeliculaById,[titulo, id_imagen, anio, director, genero, duracion, id]);
+        // Editar la película en tabla películas
+        result = await client.query(queries.actualizarPeliculaById,[titulo, url_imagen, anio, director, genero, duracion, id]);
         //console.log(result.rows[0])
-
-        // Editar también en favoritos
 
         return res.status(200).json({
             ok: true,
@@ -105,7 +108,6 @@ const editarPelícula = async (req, res) => {
         client.release();
     };
 };
-// formulario como el de crear película pero con campos autorellenados con los datos almacenados localmente.
 
 // BORRAR PELÍCULA POR ID - /removieMovie
 const eliminarPelícula = async (req, res) => {
@@ -118,16 +120,26 @@ const eliminarPelícula = async (req, res) => {
 
     // Capturar id
     const {id} = req.params;
-    console.log(id);
+    //console.log(id);
 
     try {
         // Conectar a la BBDD
         client = await pool.connect();
 
-        // Como ya existe primero eliminarla de favoritos
+        // Comprobar si la película existe o no a través de id
+        const peliculaExisteEliminar = await client.query(queries.peliculaExisteById,[id]); 
+
+        if (!id || peliculaExisteEliminar.rows.length === 0) {
+            return res.status(404).json({
+                ok: false,
+                mensaje: "No se puede editar la película porque no existe"
+            });
+        };
+        
+        // Eliminar película de tabla favoritos
         const peliculaEliminadaFavs = await client.query(queries.eliminarPeliculaTablaFavoritos,[id]);
 
-        // Eliminarla de películas
+        // Eliminar película de tabla películas
         result = await client.query(queries.eliminarPeliculaTablaPeliculas,[id]); // De los params
         
         return res.status(200).json({
