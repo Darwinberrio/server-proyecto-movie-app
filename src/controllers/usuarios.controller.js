@@ -51,7 +51,7 @@ const createUser = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            maxAge: 3600000,
+            maxAge: 12 * 60 * 60 * 1000,
         });
 
         res.json({ ok: true, user, token, redirect: "/dashboard" });
@@ -91,7 +91,7 @@ const loginUser = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            maxAge: 3600000,
+            maxAge: 12 * 60 * 60 * 1000,
         });
 
         return res.json({ ok: true, redirect });
