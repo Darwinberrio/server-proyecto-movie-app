@@ -1,17 +1,15 @@
-/**
- * Función que verifica el rol del usuario
- * @param {Object} req 
- * @param {Object} res 
- * @param {Function} next
- * @param {String} rol 
- * @returns Si el rol del usuario no coincide con el rol requerido devuelve error 403, si no pasa al siguiente middleware
- */
-const verificarRol = (rol) => (req, res, next) => {
-    if (req.tokenData.rol !== rol) {
-        return res.status(403).json({ ok: false, message: "Acceso denegado" });
-    }
-    next();
+const verificarRol = (...rolesPermitidos) => {
+    return (req, res, next) => {
+        if (!rolesPermitidos.includes(req.tokenData.rol)) {
+            return res
+                .status(403)
+                .json({ ok: false, message: "Acceso denegado" });
+        }
+        next();
+    };
 };
+
+module.exports = { verificarRol };
 
 // EXPORTAR FUNCIONES
 module.exports = { verificarRol };

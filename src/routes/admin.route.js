@@ -3,32 +3,63 @@ const express = require("express");
 const router = express.Router();
 
 // REQUERIMIENTOS PROPIOS
-const {validarCrearPelicula, validarEditarPelicula} = require("../validators/crud-admin.validator");
-const {validarJWT} = require("../middlewares/validarJWT");
+const {
+    validarCrearPelicula,
+    validarEditarPelicula,
+} = require("../validators/crud-admin.validator");
+const { validarJWT } = require("../middlewares/validarJWT");
 
 const { validarCampos } = require("../middlewares/validarCampos");
 
+const { verificarRol } = require("../middlewares/verificarRol");
+
 // FUNCIONES CONTROLADORAS
-const {crearPelicula, editarPelícula, eliminarPelícula, obtenerTodasPeliculas, obtenerPeliculabyId} = require('../controllers/admin.controllers');
+const {
+    crearPelicula,
+    editarPelícula,
+    eliminarPelícula,
+    obtenerTodasPeliculas,
+    obtenerPeliculabyId,
+} = require("../controllers/admin.controllers");
 
 // MIDDLEWARES DE COMPROBACIÓN
 //Comprobar año y nombre de película
-const {comprobarNombreYAnioPelicula} = require("../middlewares/comprobarnombreanopelicula")
+const {
+    comprobarNombreYAnioPelicula,
+} = require("../middlewares/comprobarnombreanopelicula");
 
 // CREAR PELÍCULA - /createMovie
-router.post('/createmovie', [validarJWT, comprobarNombreYAnioPelicula, validarCrearPelicula, validarCampos], crearPelicula);
+router.post(
+    "/createmovie",
+    [
+        validarJWT,
+        verificarRol("admin"),
+        comprobarNombreYAnioPelicula,
+        validarCrearPelicula,
+        validarCampos,
+    ],
+    crearPelicula
+);
 
 // OBTENER PELÍCULAS - /movies
-router.get('/all', [validarJWT], obtenerTodasPeliculas);
+router.get("/all", [validarJWT, verificarRol("admin")], obtenerTodasPeliculas);
 
 // OBTENER PELÍCULA POR ID
-router.get('/:id', [validarJWT], obtenerPeliculabyId);
+router.get("/:id", [validarJWT, verificarRol("admin")], obtenerPeliculabyId);
 
 // EDITAR PELÍCULA POR ID
-router.put('/editmovie/:id', [validarJWT, validarEditarPelicula, validarCampos], editarPelícula);
+router.put(
+    "/editmovie/:id",
+    [validarJWT, verificarRol("admin"), validarEditarPelicula, validarCampos],
+    editarPelícula
+);
 
 // BORRAR PELÍCULA POR ID
-router.delete('/removemovie/:id', [validarJWT], eliminarPelícula);
+router.delete(
+    "/removemovie/:id",
+    [validarJWT, verificarRol("admin")],
+    eliminarPelícula
+);
 
 // EXPORTAR RUTAS
 module.exports = router;

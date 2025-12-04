@@ -108,16 +108,26 @@ const loginUser = async (req, res) => {
  * @returns Renovación del token
  */
 const renewToken = (req, res) => {
-    const token = jwt.sign(
-        {
-            uid: req.tokenData.uid,
-            nombre: req.tokenData.nombre,
+    try {
+        const token = jwt.sign(
+            {
+                uid: req.tokenData.uid,
+                nombre: req.tokenData.nombre,
+                rol: req.tokenData.rol,
+            },
+            process.env.JWT_SECRET_KEY,
+            { expiresIn: "12h" }
+        );
+
+        res.json({
+            ok: true,
+            token,
             rol: req.tokenData.rol,
-        },
-        process.env.JWT_SECRET_KEY,
-        { expiresIn: "12h" }
-    );
-    res.json({ ok: true, token });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ ok: false, message: "Error renovando token" });
+    }
 };
 
 //FORMULARIO ACCESO
@@ -304,31 +314,6 @@ const addFavorito = async (req, res) => {
         console.log(error);
     }
 };
-
-/**
- * funcion que redirige a la ruta movies dependiendo del rol del usuario
- * @param {*} req requerimiento
- * @param {*} res respuesta
- * @returns
- */
-const rutaMovie = (req, res) => {
-    const rol = req.tokenData.rol;
-
-    if (rol === "admin") {
-        return res
-            .status(200)
-            .json({ ok: true, message: "en movie como admin" });
-    }
-    if (rol === "user") {
-        //res.status(200).json({ok: true, message: "en movie como user"});
-
-        //si el el rol es user pasa a ejecutar la funcion getAllFavoritos
-        return getAllFavoritos(req, res);
-    }
-
-    //si no se obtiene ningun rol valido
-    return res.status(403).json({ ok: false, message: "Acceso denegado" });
-};
 //FIN MOVIES
 
 /**
@@ -415,7 +400,7 @@ module.exports = {
     createUser,
     loginUser,
     renewToken,
-    rutaMovie,
+    getAllFavoritos,
     deleteFavorito,
     addFavorito,
     busquedaPeliculas,

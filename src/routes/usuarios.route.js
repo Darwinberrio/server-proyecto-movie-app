@@ -4,13 +4,12 @@ const router = express.Router();
 
 // IMPORTACIONES PROPIAS
 const { validarJWT } = require("../middlewares/validarJWT");
-const { redireccionRol } = require("../middlewares/redireccionRol");
 const { verificarRol } = require("../middlewares/verificarRol");
 const {
     createUser,
     loginUser,
     renewToken,
-    rutaMovie,
+    getAllFavoritos,
     deleteFavorito,
     addFavorito,
     busquedaPeliculas,
@@ -24,10 +23,8 @@ const { validarCampos } = require("../middlewares/validarCampos");
 
 // RUTAS
 /**FORMULARIO ACCESO */
-//router.get("/signup", redireccionRol, (req, res) => res.render("register"));
 router.post("/signup", [validarRegistro, validarCampos], createUser);
 
-//router.get("/", redireccionRol, (req, res) => res.render("login"));
 router.post("/login", [validarLogin, validarCampos], loginUser);
 
 router.post("/logout", (req, res) =>
@@ -46,13 +43,23 @@ router.get("/dashboard", validarJWT, verificarRol("user"), (req, res) =>
 /** FIN USER*/
 
 /** FAVORITOS(MOVIES) USER */
-router.get("/movies", validarJWT, rutaMovie);
-router.delete("/movies/delete", validarJWT, deleteFavorito);
-router.post("/movies/add", validarJWT, addFavorito);
+router.get("/movies", validarJWT, verificarRol("user"), getAllFavoritos);
+router.delete(
+    "/movies/delete",
+    validarJWT,
+    verificarRol("user"),
+    deleteFavorito
+);
+router.post("/movies/add", validarJWT, verificarRol("user"), addFavorito);
 
-router.get("/search", validarJWT, busquedaPeliculas);
+router.get("/search", validarJWT, verificarRol("user"), busquedaPeliculas);
 
-router.get("/movies/detailsMovie", validarJWT, buscarPeliculasById);
+router.get(
+    "/movies/detailsMovie",
+    validarJWT,
+    verificarRol("user"),
+    buscarPeliculasById
+);
 /**FIN FAVORITOS(MOVIES) USER */
 
 // EXPORTAR RUTAS
