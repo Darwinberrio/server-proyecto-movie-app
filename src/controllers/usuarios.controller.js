@@ -14,9 +14,16 @@ const { queries } = require("../db/queries");
  * @returns Promise - Crea nuevos usuarios User o devuelve errores (500 o 400)
  */
 const createUser = async (req, res) => {
-    const { nombre, email, password } = req.body;
+    const { nombre, email, password, confirmPassword } = req.body;
 
     try {
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                ok: false,
+                message: "Las contraseñas no coinciden",
+            });
+        }
+
         const existe = await pool.query(queries.findUserByEmail, [email]);
 
         if (existe.rows.length > 0) {
@@ -35,11 +42,17 @@ const createUser = async (req, res) => {
         ]);
 
         const user = result.rows[0];
+
         const token = jwt.sign(
             { uid: user.id, nombre: user.nombre, rol: user.rol },
             process.env.JWT_SECRET_KEY,
             { expiresIn: "12h" }
         );
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 3600000,
+        });
 
         res.json({ ok: true, user, token, redirect: "/dashboard" });
     } catch (error) {
@@ -62,7 +75,6 @@ const loginUser = async (req, res) => {
 
         const user = result.rows[0];
 
-        console.log(result.rows);
         if (!user || !(await bcrypt.compare(password, user.contrasena))) {
             return res
                 .status(400)
@@ -77,7 +89,12 @@ const loginUser = async (req, res) => {
 
         const redirect = user.rol === "admin" ? "/movies" : "/dashboard";
 
-        res.json({ ok: true, token, redirect });
+        res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 3600000,
+        });
+
+        return res.json({ ok: true, redirect });
     } catch (error) {
         console.error(error);
         res.status(500).json({ ok: false, message: "Error al iniciar sesión" });

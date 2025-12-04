@@ -14,7 +14,7 @@ const {
     deleteFavorito,
     addFavorito,
     busquedaPeliculas,
-    buscarPeliculasById
+    buscarPeliculasById,
 } = require("../controllers/usuarios.controller");
 const {
     validarRegistro,
@@ -24,10 +24,10 @@ const { validarCampos } = require("../middlewares/validarCampos");
 
 // RUTAS
 /**FORMULARIO ACCESO */
-router.get("/register", redireccionRol, (req, res) => res.render("register"));
-router.post("/register", [validarRegistro, validarCampos], createUser);
+//router.get("/signup", redireccionRol, (req, res) => res.render("register"));
+router.post("/signup", [validarRegistro, validarCampos], createUser);
 
-router.get("/", redireccionRol, (req, res) => res.render("login"));
+//router.get("/", redireccionRol, (req, res) => res.render("login"));
 router.post("/login", [validarLogin, validarCampos], loginUser);
 
 router.post("/logout", (req, res) =>
@@ -50,9 +50,9 @@ router.get("/movies", validarJWT, rutaMovie);
 router.delete("/movies/delete", validarJWT, deleteFavorito);
 router.post("/movies/add", validarJWT, addFavorito);
 
-router.get('/search', validarJWT, busquedaPeliculas);
+router.get("/search", validarJWT, busquedaPeliculas);
 
-router.get('/movies/detailsMovie', validarJWT, buscarPeliculasById);
+router.get("/movies/detailsMovie", validarJWT, buscarPeliculasById);
 /**FIN FAVORITOS(MOVIES) USER */
 
 // EXPORTAR RUTAS
