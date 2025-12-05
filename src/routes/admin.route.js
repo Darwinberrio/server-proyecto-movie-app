@@ -41,10 +41,16 @@ router.get("/all", [validarJWT, verificarRol("admin")], obtenerTodasPeliculas);
 // OBTENER PELÍCULA POR ID
 router.get("/:id", [validarJWT, verificarRol("admin")], obtenerPeliculabyId);
 
+
+router.get(
+    "/editmovie/:id",
+    [/* validarJWT, verificarRol("admin"),  validarEditarPelicula, validarCampos*/],
+    obtenerPeliculabyId
+);
 // EDITAR PELÍCULA POR ID
 router.put(
     "/editmovie/:id",
-    [validarJWT, verificarRol("admin"), validarEditarPelicula, validarCampos],
+    [/* validarJWT, verificarRol("admin"), */ validarEditarPelicula, validarCampos],
     editarPelícula
 );
 
