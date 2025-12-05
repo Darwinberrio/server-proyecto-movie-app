@@ -2,10 +2,15 @@
 const express = require("express");
 const router = express.Router();
 
+const multer = require('multer');
+const upload = multer({ dest: 'public/uploads' })
+
 // REQUERIMIENTOS PROPIOS
 const {validarCrearPelicula, validarEditarPelicula} = require("../validators/crud-admin.validator")
 
 const { validarCampos } = require("../middlewares/validarCampos");
+
+const { saveImageMiddleware} = require("../middlewares/uploadImage");
 
 // FUNCIONES CONTROLADORAS
 const {crearPelicula, editarPelícula, eliminarPelícula} = require('../controllers/admin.controllers');
@@ -15,7 +20,7 @@ const {crearPelicula, editarPelícula, eliminarPelícula} = require('../controll
 const {comprobarNombreYAnioPelicula} = require("../middlewares/comprobarnombreanopelicula")
 
 // CREAR PELÍCULA - /createMovie
-router.post('/createmovie', [comprobarNombreYAnioPelicula, validarCrearPelicula, validarCampos], crearPelicula);
+router.post('/createmovie', upload.single('url_imagen'),[saveImageMiddleware,comprobarNombreYAnioPelicula, validarCrearPelicula, validarCampos,], crearPelicula);
 
 // OBTENER PELÍCULAS - /movies
 
