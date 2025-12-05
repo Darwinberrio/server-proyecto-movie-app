@@ -49,10 +49,10 @@ const createUser = async (req, res) => {
             { expiresIn: "12h" }
         );
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            maxAge: 12 * 60 * 60 * 1000,
-        });
+        // res.cookie("token", token, {
+        //     httpOnly: true,
+        //     maxAge: 12 * 60 * 60 * 1000,
+        // });
 
         res.json({ ok: true, user, token, redirect: "/dashboard" });
     } catch (error) {
@@ -89,17 +89,18 @@ const loginUser = async (req, res) => {
 
         const redirect = user.rol === "admin" ? "/movies" : "/dashboard";
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            maxAge: 12 * 60 * 60 * 1000,
-        });
+        // res.cookie("token", token, {
+        //     httpOnly: true,
+        //     maxAge: 12 * 60 * 60 * 1000,
+        // });
 
-        return res.json({ ok: true, redirect });
+        return res.json({ ok: true, redirect,token });
     } catch (error) {
         console.error(error);
         res.status(500).json({ ok: false, message: "Error al iniciar sesión" });
     }
 };
+
 
 /**
  * Función que renueva el token de un usuario autenticado

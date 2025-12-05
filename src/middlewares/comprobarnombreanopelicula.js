@@ -12,6 +12,8 @@ const {queries} = require('../db/queries');
  * @param {Metodo} next 
  * @returns Promise - Comprueba si la película ya existe en la tabla películas y pasa al siguiente middleware o devuelve errores (500 o 400)
  */
+
+
 const comprobarNombreYAnioPelicula = async (req, res, next) => {
     // Acceso a BBDD
     let client;
@@ -45,7 +47,7 @@ const comprobarNombreYAnioPelicula = async (req, res, next) => {
 
     }catch (error){
         console.log(error);
-        res.status(500).json({
+        return res.status(500).json({
             ok: false,
             msg: "Ha habido un problema, contacte con el administrador"
         });

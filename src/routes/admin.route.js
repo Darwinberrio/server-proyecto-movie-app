@@ -44,9 +44,11 @@ router.get("/:id", [validarJWT, verificarRol("admin")], obtenerPeliculabyId);
 
 router.get(
     "/editmovie/:id",
-    [/* validarJWT, verificarRol("admin"),  validarEditarPelicula, validarCampos*/],
-    obtenerPeliculabyId
+    [/* validarJWT, verificarRol("admin"), */ validarEditarPelicula, validarCampos],
+    editarPelícula
 );
+
+
 // EDITAR PELÍCULA POR ID
 router.put(
     "/editmovie/:id",
