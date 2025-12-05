@@ -4,6 +4,9 @@ require("dotenv").config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
+//const swaggerUi = require('swagger-ui-express');
+//const swaggerDocument = require('./swagger.json');
+
 //IMPORTACIONES locales
 const app = express();
 const usuariosRouter = require("./routes/usuarios.route");
@@ -26,6 +29,8 @@ app.use(express.urlencoded());
 app.use("/", usuariosRouter);
 app.use("/movies", adminRouter);
 
+//app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 //Templates
 app.set('view engine', 'ejs')
 app.set("views", __dirname + "/views");
@@ -33,13 +38,6 @@ app.set("views", __dirname + "/views");
 
 //middleware
 app.use(express.static(__dirname + "/public"))
-
-/* RUTAS */
-
-app.use('/',usuariosRouter);
-
-// Rutas de usuarios
-// app.use('/usuarios', require('./routes/usuarios.route'));
 
 //listener
 app.listen(port, () => {
