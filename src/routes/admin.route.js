@@ -33,7 +33,7 @@ const {
 } = require("../middlewares/comprobarnombreanopelicula");
 
 // CREAR PELÍCULA - /createMovie
-router.post('/createmovie', upload.single('url_imagen'),[validarJWT, verificarRol("admin"), saveImageMiddleware,comprobarNombreYAnioPelicula, validarCrearPelicula, validarCampos], crearPelicula);
+router.post('/createmovie', upload.single('url_imagen'),[/*validarJWT, verificarRol("admin"), */saveImageMiddleware,comprobarNombreYAnioPelicula, validarCrearPelicula, validarCampos], crearPelicula);
 
 // OBTENER PELÍCULAS - /movies
 router.get("/all", [validarJWT, verificarRol("admin")], obtenerTodasPeliculas);

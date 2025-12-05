@@ -20,7 +20,7 @@ const crearPelicula = async (req, res) => {
     // Datos
     let result;
 
-    console.log(req.body);
+    //console.log(req.body);
 
     // Capturar los elementos deseados - data de la película
     const {titulo, anio, director, genero, duracion,url_imagen} = req.body;

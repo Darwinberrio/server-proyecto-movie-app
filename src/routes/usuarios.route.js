@@ -27,9 +27,8 @@ router.post("/signup", [validarRegistro, validarCampos], createUser);
 
 router.post("/login", [validarLogin, validarCampos], loginUser);
 
-router.post("/logout", (req, res) =>
-    res.json({ ok: true, message: "Cierre de sesión exitoso" })
-);
+
+
 /**FIN FORMULARIO ACCESO */
 
 /** USER*/
