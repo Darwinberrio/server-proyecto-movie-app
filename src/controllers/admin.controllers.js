@@ -14,9 +14,14 @@ const crearPelicula = async (req, res) => {
     // Datos
     let result;
 
+    console.log(req.body);
+
     // Capturar los elementos deseados - data de la película
-    const {titulo, url_imagen, anio, director, genero, duracion} = req.body;
-    //console.log(req.body);
+    const {titulo, anio, director, genero, duracion,url_imagen} = req.body;
+
+    //comprobacion de file en back
+    //console.log('Recogiendo file desde back:',req.file)
+     
 
     try{
         // Conectar a la BBDD
@@ -28,7 +33,7 @@ const crearPelicula = async (req, res) => {
         if (peliculaExiste.rows.length > 0) {
             return res.status(400).json({ 
                 ok: false, 
-                mensaje: "No se puede crear la película porque ya existe" 
+                msg: "No se puede crear la película porque ya existe" 
             });
         };
 
@@ -37,7 +42,7 @@ const crearPelicula = async (req, res) => {
 
         return res.status(201).json({
             ok: true,
-            mensaje: "Película creada de forma correcta",
+            msg: "Película creada de forma correcta",
             data: result.rows[0]
         });
 
@@ -45,7 +50,7 @@ const crearPelicula = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             ok: false,
-            mensaje: "Ha habido un problema, contacte con el administrador"
+            msg: "Ha habido un problema, contacte con el administrador"
         });
 
     } finally {
@@ -80,7 +85,7 @@ const editarPelícula = async (req, res) => {
         if (!id || peliculaExisteEditar.rows.length === 0) {
             return res.status(404).json({
                 ok: false,
-                mensaje: "No se puede editar la película porque no existe"
+                msg: "No se puede editar la película porque no existe"
             });
         };
 
@@ -94,7 +99,7 @@ const editarPelícula = async (req, res) => {
 
         return res.status(200).json({
             ok: true,
-            mensaje: "Película modificada correctamente",
+            msg: "Película modificada correctamente",
             data: result.rows[0]
         });
 
@@ -102,7 +107,7 @@ const editarPelícula = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             ok: false,
-            mensaje: "Ha habido un problema, contacte con el administrador"
+            msg: "Ha habido un problema, contacte con el administrador"
         });
     } finally {
         client.release();
@@ -132,7 +137,7 @@ const eliminarPelícula = async (req, res) => {
         if (!id || peliculaExisteEliminar.rows.length === 0) {
             return res.status(404).json({
                 ok: false,
-                mensaje: "No se puede editar la película porque no existe"
+                msg: "No se puede editar la película porque no existe"
             });
         };
         
@@ -144,7 +149,7 @@ const eliminarPelícula = async (req, res) => {
         
         return res.status(200).json({
             ok: true,
-            mensaje: "Película eliminada correctamente",
+            msg: "Película eliminada correctamente",
         });
 
         // Pendiente mirar doble verificación
@@ -153,7 +158,7 @@ const eliminarPelícula = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             ok: false,
-            mensaje: "Ha habido un problema, contacte con el administrador"
+            msg: "Ha habido un problema, contacte con el administrador"
         });
     } finally {
         client.release();

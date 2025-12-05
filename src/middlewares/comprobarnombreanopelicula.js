@@ -12,7 +12,7 @@ const comprobarNombreYAnioPelicula = async (req, res, next) => {
 
     // Capturar los elementos deseados - data de la película
     const {titulo, anio} = req.body;
-    //console.log(titulo, anio);
+    console.log(titulo, anio);
 
     try {
 
@@ -20,14 +20,16 @@ const comprobarNombreYAnioPelicula = async (req, res, next) => {
         client = await pool.connect();
 
         // Coger título y año  de la BBDD
-        const peliculaExiste = await client.query(queries.comprobarNombreYAnioPelicula,[titulo, anio]);
-        console.log(peliculaExiste);
+        const peliculaExiste = await client.query(queries.peliculaExiste,[titulo, anio]);
+        //console.log(peliculaExiste);
 
         // Posibilidad de que haya películas con el mismo nombre - Se filtra también por año
-        if(titulo === peliculaExiste.titulo && anio === peliculaExiste.anio) {
+        //if(titulo === peliculaExiste.titulo && anio === peliculaExiste.anio) {
+
+        if(peliculaExiste.rowCount==1) {
             return res.status(400).json({
                 ok: false,
-                mensaje: "La película ya existe, no se puede volver a crear"
+                msg: "La película ya existe, no se puede volver a crear"
             })
         }
         
@@ -37,7 +39,7 @@ const comprobarNombreYAnioPelicula = async (req, res, next) => {
         console.log(error);
         res.status(500).json({
             ok: false,
-            mensaje: "Ha habido un problema, contacte con el administrador"
+            msg: "Ha habido un problema, contacte con el administrador"
         });
     } finally {
         client.release();

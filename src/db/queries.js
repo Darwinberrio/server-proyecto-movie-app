@@ -10,7 +10,7 @@ const queries = {
     // INICIO QUERIES DE CRUD ADMIN
     peliculaExiste: "SELECT * FROM peliculas WHERE titulo=$1 AND anio=$2",
 
-    crearPelicula: "INSERT INTO peliculas(titulo, id_imagen, anio, director, genero, duracion) VALUES($1, $2, $3, $4, $5, $6) RETURNING titulo, id_imagen, anio, director, genero, duracion",
+    crearPelicula: "INSERT INTO peliculas(titulo, url_imagen, anio, director, genero, duracion) VALUES($1, $2, $3, $4, $5, $6) RETURNING titulo, url_imagen, anio, director, genero, duracion",
 
     actualizarPeliculaById: "UPDATE peliculas SET titulo = $1, url_imagen = $2, anio = $3, director = $4, genero = $5, duracion = $6 WHERE id_pelicula = $7 RETURNING titulo, url_imagen, anio, director, genero, duracion",
 
