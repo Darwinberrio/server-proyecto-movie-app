@@ -37,7 +37,7 @@ app.set("views", __dirname + "/views");
 
 
 //middleware
-app.use(express.static(__dirname + "/public"))
+app.use(express.static(__dirname + "/../public"))
 
 //listener
 app.listen(port, () => {
