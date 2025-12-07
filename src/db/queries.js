@@ -38,7 +38,9 @@ const queries = {
 
     crearPelicula: "INSERT INTO peliculas(titulo, url_imagen, anio, director, genero, duracion) VALUES($1, $2, $3, $4, $5, $6) RETURNING titulo, url_imagen, anio, director, genero, duracion",
 
-    actualizarPeliculaById: "UPDATE peliculas SET titulo = $1, url_imagen = $2, anio = $3, director = $4, genero = $5, duracion = $6 WHERE id_pelicula = $7 RETURNING titulo, url_imagen, anio, director, genero, duracion",
+    actualizarPeliculaById: "UPDATE peliculas SET titulo = $1, anio = $2, director = $3, genero = $4, duracion = $5 WHERE id_pelicula = $6 RETURNING id_pelicula,titulo, url_imagen, anio, director, genero, duracion",
+
+    actualizarPeliculaById2: "UPDATE peliculas SET titulo = $1, url_imagen = $2, anio = $3, director = $4, genero = $5, duracion = $6 WHERE id_pelicula = $7 RETURNING id_pelicula,titulo, url_imagen, anio, director, genero, duracion",
 
     eliminarPeliculaTablaPeliculas: "DELETE FROM peliculas WHERE id_pelicula = $1",
 

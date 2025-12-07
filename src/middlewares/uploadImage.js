@@ -15,17 +15,16 @@ const saveImageMiddleware = (req, res,next) => {
     //captura el archivo subido
     const newPath = saveImage(req.file); 
     
-    // newPath será algo como: "public/uploads/nombre.png"
     // Construimos la URL pública que quieres guardar (ajusta según tu static)
     const publicUrl = `/uploads/${req.file.originalname}`;
 
     // Guardamos la URL en el body para que el controller la use al guardar en la BD
     req.body.url_imagen = publicUrl;
 
-    console.log("nuevo path (fs):", newPath);
-    console.log("url pública:", publicUrl);
+    //console.log("nuevo path:", newPath);
+    //console.log("url pública:", publicUrl);
 
-    // 👇 MUY IMPORTANTE: no respondas aquí, deja que siga la cadena
+    //pasa el control al siguiente middleware o controller
     next();
 
 };

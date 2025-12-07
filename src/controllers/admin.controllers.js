@@ -20,8 +20,6 @@ const crearPelicula = async (req, res) => {
     // Datos
     let result;
 
-    //console.log(req.body);
-
     // Capturar los elementos deseados - data de la película
     const {titulo, anio, director, genero, duracion,url_imagen} = req.body;
 
@@ -138,7 +136,7 @@ const obtenerPeliculabyId = async (req, res) => {
 
         // Obtener película por id
         result = await client.query(queries.obtenerPeliculabyIdAdmin,[id]);
-        console.log(result);
+        //console.log(result);
 
         // Si no encuentra la película
         if(result.rows.length === 0) {
@@ -149,13 +147,14 @@ const obtenerPeliculabyId = async (req, res) => {
         };
 
         // Obtener datos de película
-        const {titulo, url_imagen, anio, director, genero, duracion} = result.rows[0];
+        const {id_pelicula,titulo, url_imagen, anio, director, genero, duracion} = result.rows[0];
 
         // Si existe devolverla
         return res.status(200).json({
             ok: true,
             mensaje: "La película se ha encontrado correctamente",
             data: {
+                id_pelicula,
                 titulo,
                 url_imagen,
                 anio,
@@ -190,16 +189,19 @@ const editarPelícula = async (req, res) => {
     let client;
     // Datos
     let result;
-
+    
     // Capturar id
     const {id} = req.params;
 
+    console.log(id)
+
+    console.log(req.body)
     try {
         // Conectar a la BBDD
         client = await pool.connect();
 
         // Comprobar si la película existe o no a través de id
-        const peliculaExisteEditar = await client.query(queries.peliculaExisteById,[id]); 
+        const peliculaExisteEditar = await client.query(queries.findPeliculabyId,[id]); 
 
         if (!id || peliculaExisteEditar.rows.length === 0) {
             return res.status(404).json({
@@ -208,12 +210,22 @@ const editarPelícula = async (req, res) => {
             });
         };
 
-        // Capturar los elementos deseados - data de la película
-        const {titulo, url_imagen, anio, director, genero, duracion} = req.body;
+        //si la imagen es null, actualiza todo menos imagen
+        if(!req.body.url_imagen){
+            // Capturar los elementos deseados - data de la película
+            const {titulo, anio, director, genero, duracion} = req.body;
+            // Editar la película en tabla películas
+            result = await client.query(queries.actualizarPeliculaById,[titulo, anio, director, genero, duracion, id]);
+        
+        }else{
+            const {titulo, url_imagen, anio, director, genero, duracion} = req.body;
+            result = await client.query(queries.actualizarPeliculaById2,[titulo, url_imagen, anio, director, genero, duracion, id]);
+        }
+        
+        
         //console.log(titulo, url_imagen, anio, director, genero, duracion);
 
-        // Editar la película en tabla películas
-        result = await client.query(queries.actualizarPeliculaById,[titulo, url_imagen, anio, director, genero, duracion, id]);
+        
         //console.log(result.rows[0])
 
         return res.status(200).json({

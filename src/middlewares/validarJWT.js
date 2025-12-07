@@ -9,12 +9,14 @@ const jwt = require("jsonwebtoken");
  * @returns {JSON} Respuesta con error si el token no es válido o falta
  */
 const validarJWT = (req, res, next) => {
-    const token = req.cookies?.token;
+
+    //captura el token del header Authorization
+    const token = req.headers["authorization"]?.split(" ")[1];
 
     if (!token) {
         return res.status(401).json({
             ok: false,
-            message: "No hay token en la petición.",
+            msg: "No hay token en la petición.",
         });
     }
 
@@ -35,7 +37,7 @@ const validarJWT = (req, res, next) => {
 
         return res.status(401).json({
             ok: false,
-            message: "Token no válido.",
+            msg: "Token no válido.",
         });
     }
 };

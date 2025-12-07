@@ -33,7 +33,9 @@ const {
 } = require("../middlewares/comprobarnombreanopelicula");
 
 // CREAR PELÍCULA - /createMovie
-router.post('/createmovie', upload.single('url_imagen'),[validarJWT, verificarRol("admin"), saveImageMiddleware,comprobarNombreYAnioPelicula, validarCrearPelicula, validarCampos], crearPelicula);
+
+router.post('/createmovie', validarJWT, verificarRol("admin"),[upload.single('url_imagen'),validarCrearPelicula,validarCampos,comprobarNombreYAnioPelicula,saveImageMiddleware ], crearPelicula);
+
 
 // OBTENER PELÍCULAS - /movies
 router.get("/all", [validarJWT, verificarRol("admin")], obtenerTodasPeliculas);
@@ -41,19 +43,18 @@ router.get("/all", [validarJWT, verificarRol("admin")], obtenerTodasPeliculas);
 // OBTENER PELÍCULA POR ID
 router.get("/:id", [validarJWT, verificarRol("admin")], obtenerPeliculabyId);
 
-
+// EDITAR PELÍCULA POR ID
 router.get(
     "/editmovie/:id",
-    [/* validarJWT, verificarRol("admin"), validarEditarPelicula,  validarCampos*/],
+    [/* validarJWT, verificarRol("admin")*/],
     obtenerPeliculabyId
 );
 
-
 // EDITAR PELÍCULA POR ID
-router.put(
+router.post(
     "/editmovie/:id",
-    [/* validarJWT, verificarRol("admin"),  validarEditarPelicula, validarCampos*/],
-    obtenerPeliculabyId
+    /* validarJWT, verificarRol("admin"),*/[upload.single('url_imagen'),validarEditarPelicula,validarCampos,saveImageMiddleware],
+    editarPelícula
 );
 
 // BORRAR PELÍCULA POR ID

@@ -15,7 +15,8 @@ const validarCampos = (req, res, next) => {
     if (!errores.isEmpty()) {
         return res.status(400).json({
             ok: false,
-            errores: errores.array(),
+            //convierte los errores en array y los une en un string separado por saltos de línea
+            errores: errores.array().map(e => e.msg).join('<br>')
         });
     }
 

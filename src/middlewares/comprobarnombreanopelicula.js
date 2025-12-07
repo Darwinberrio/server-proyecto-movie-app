@@ -1,5 +1,6 @@
 // REQUERIMIENTOS DE TERCEROS
 const {pool} = require('../config/dbConnect');
+const fs = require("node:fs/promises");
 
 // REQUERIMIENTOS PROPIOS
 const {queries} = require('../db/queries');
@@ -22,7 +23,7 @@ const comprobarNombreYAnioPelicula = async (req, res, next) => {
 
     // Capturar los elementos deseados - data de la película
     const {titulo, anio} = req.body;
-    console.log(titulo, anio);
+    //console.log(titulo, anio);
 
     try {
 
@@ -31,22 +32,42 @@ const comprobarNombreYAnioPelicula = async (req, res, next) => {
 
         // Coger título y año  de la BBDD
         const peliculaExiste = await client.query(queries.peliculaExiste,[titulo, anio]);
+
         //console.log(peliculaExiste);
 
         // Posibilidad de que haya películas con el mismo nombre - Se filtra también por año
-        //if(titulo === peliculaExiste.titulo && anio === peliculaExiste.anio) {
-
         if(peliculaExiste.rowCount==1) {
+
+            // si la pelicula existe, se borra la imagen subida
+            if (req.file) {
+                try {
+                   console.log('Borrando archivo temporal:', req.file.path);
+                   await fs.unlink(req.file.path);
+                } catch (err) {
+                   console.error('Error borrando archivo temporal:', err);
+                }
+            }
+            //resultado para front
             return res.status(400).json({
                 ok: false,
                 msg: "La película ya existe, no se puede volver a crear"
             })
         }
         
+        //devuelve el control al siguiente middleware
         next();
 
     }catch (error){
-        console.log(error);
+        //console.log(error);
+
+        // también limpiamos archivo en caso de error
+        if (req.file) {
+        try {
+            await fs.unlink(req.file.path);
+        } catch (err) {
+            console.error('Error borrando archivo tras error:', err);
+        }
+        }
         return res.status(500).json({
             ok: false,
             msg: "Ha habido un problema, contacte con el administrador"
