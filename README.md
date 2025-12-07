@@ -67,7 +67,7 @@ Se diferencian dos roles de usuario:
 4. **PUT** `/editMovie/:id` → Editar película (solo Admin).
 5. **DELETE** `/removeMovie/:id` → Eliminar película (solo Admin).
 
-## ⭐ Favoritos
+## Favoritos
 1. **GET** `/movies` → Listado de películas del usuario.
 1. **POST** `/movies` → Añadir una película a favoritos.
 1. **DELETE** `/movies` → Eliminar una película de favoritos
