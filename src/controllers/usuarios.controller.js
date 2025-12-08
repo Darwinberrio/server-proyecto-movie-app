@@ -44,7 +44,7 @@ const createUser = async (req, res) => {
         const user = result.rows[0];
 
         const token = jwt.sign(
-            { uid: user.id, nombre: user.nombre, rol: user.rol },
+            { uid: user.id_usuario, nombre: user.nombre, rol: user.rol },
             process.env.JWT_SECRET_KEY,
             { expiresIn: "12h" }
         );
@@ -94,13 +94,12 @@ const loginUser = async (req, res) => {
         //     maxAge: 12 * 60 * 60 * 1000,
         // });
 
-        return res.json({ ok: true, redirect,token });
+        return res.json({ ok: true, redirect, token });
     } catch (error) {
         console.error(error);
         res.status(500).json({ ok: false, message: "Error al iniciar sesión" });
     }
 };
-
 
 /**
  * Función que renueva el token de un usuario autenticado
