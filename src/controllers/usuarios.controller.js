@@ -38,7 +38,7 @@ const createUser = async (req, res) => {
             nombre,
             email,
             hashedPassword,
-            "user",
+            "admin",
         ]);
 
         const user = result.rows[0];
