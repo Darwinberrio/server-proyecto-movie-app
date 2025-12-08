@@ -9,7 +9,5 @@ const verificarRol = (...rolesPermitidos) => {
     };
 };
 
-module.exports = { verificarRol };
-
 // EXPORTAR FUNCIONES
 module.exports = { verificarRol };
