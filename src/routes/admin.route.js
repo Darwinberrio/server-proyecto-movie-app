@@ -52,7 +52,7 @@ router.get(
 );
 
 // EDITAR PELÍCULA POR ID
-router.post(
+router.put(
     "/editmovie/:id",
     validarJWT, verificarRol("admin"),[upload.single('url_imagen'),validarEditarPelicula,validarCampos,saveImageMiddleware],
     editarPelícula
@@ -61,7 +61,7 @@ router.post(
 // BORRAR PELÍCULA POR ID
 router.delete(
     "/removemovie/:id",
-    [validarJWT, verificarRol("admin")],
+    /*[validarJWT, verificarRol("admin")],*/
     eliminarPelícula
 );
 

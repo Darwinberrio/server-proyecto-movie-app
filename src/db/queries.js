@@ -42,7 +42,7 @@ const queries = {
 
     actualizarPeliculaById2: "UPDATE peliculas SET titulo = $1, url_imagen = $2, anio = $3, director = $4, genero = $5, duracion = $6 WHERE id_pelicula = $7 RETURNING id_pelicula,titulo, url_imagen, anio, director, genero, duracion",
 
-    eliminarPeliculaTablaPeliculas: "DELETE FROM peliculas WHERE id_pelicula = $1",
+    eliminarPeliculaTablaPeliculas: "DELETE FROM peliculas WHERE id_pelicula = $1 RETURNING titulo",
 
     eliminarPeliculaTablaFavoritos: "DELETE FROM favoritos WHERE id_pelicula = $1",
 

@@ -77,6 +77,8 @@ const obtenerTodasPeliculas = async (req, res) => {
     // Datos
     let result;
 
+    
+
     try {
 
         // Conectar a la BBDD
@@ -93,13 +95,14 @@ const obtenerTodasPeliculas = async (req, res) => {
         if(result.rows.length === 0) {
             return res.status(404).json({
                 ok:false,
-                mensaje:'No hay películas para mostrar'
+                msg:'No hay películas para mostrar'
             });
         };
 
         return res.status(200).json({
             ok: true,
-            mensaje: "Se han encontrado todas las películas correctamente",
+            msg: "Se han encontrado todas las películas correctamente",
+            
             data: result
         });
 
@@ -107,7 +110,7 @@ const obtenerTodasPeliculas = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             ok: false,
-            mensaje: "Ha habido un error, contacte con el administrador"
+            msg: "Ha habido un error, contacte con el administrador"
         });
 
     } finally {
@@ -193,9 +196,7 @@ const editarPelícula = async (req, res) => {
     // Capturar id
     const {id} = req.params;
 
-    console.log(id)
-
-    console.log(req.body)
+    //console.log(id)
     try {
         // Conectar a la BBDD
         client = await pool.connect();
@@ -211,7 +212,7 @@ const editarPelícula = async (req, res) => {
         };
 
         //si la imagen es null, actualiza todo menos imagen
-        if(!req.body.url_imagen){
+        if(req.body.url_imagen=='null'){
             // Capturar los elementos deseados - data de la película
             const {titulo, anio, director, genero, duracion} = req.body;
             // Editar la película en tabla películas
@@ -269,12 +270,12 @@ const eliminarPelícula = async (req, res) => {
         client = await pool.connect();
 
         // Comprobar si la película existe o no a través de id
-        const peliculaExisteEliminar = await client.query(queries.peliculaExisteById,[id]); 
+        const peliculaExisteEliminar = await client.query(queries.findPeliculabyId,[id]); 
 
         if (!id || peliculaExisteEliminar.rows.length === 0) {
             return res.status(404).json({
                 ok: false,
-                msg: "No se puede editar la película porque no existe"
+                msg: "No se puede eliminar la película porque no existe"
             });
         };
         
@@ -287,6 +288,7 @@ const eliminarPelícula = async (req, res) => {
         return res.status(200).json({
             ok: true,
             msg: "Película eliminada correctamente",
+            data: result.rows[0]
         });
 
         // Pendiente mirar doble verificación

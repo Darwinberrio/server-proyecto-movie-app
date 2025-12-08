@@ -5,8 +5,8 @@ const saveImageMiddleware = (req, res,next) => {
 
     
     const body = req.body
-    console.log("antes del nuevo path - body:", req.body);
-    console.log("antes del nuevo path - file:", req.file);
+    //console.log("antes del nuevo path - body:", req.body);
+    //console.log("antes del nuevo path - file:", req.file);
 
     if (!req.file) {
       return next();
