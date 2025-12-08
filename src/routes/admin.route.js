@@ -10,6 +10,7 @@ const {
     validarCrearPelicula,
     validarEditarPelicula,
 } = require("../validators/crud-admin.validator");
+
 const { validarJWT } = require("../middlewares/validarJWT");
 
 const { validarCampos } = require("../middlewares/validarCampos");
@@ -46,14 +47,14 @@ router.get("/:id", [validarJWT, verificarRol("admin")], obtenerPeliculabyId);
 // EDITAR PELÍCULA POR ID
 router.get(
     "/editmovie/:id",
-    [/* validarJWT, verificarRol("admin")*/],
+    [validarJWT, verificarRol("admin")],
     obtenerPeliculabyId
 );
 
 // EDITAR PELÍCULA POR ID
 router.post(
     "/editmovie/:id",
-    /* validarJWT, verificarRol("admin"),*/[upload.single('url_imagen'),validarEditarPelicula,validarCampos,saveImageMiddleware],
+    validarJWT, verificarRol("admin"),[upload.single('url_imagen'),validarEditarPelicula,validarCampos,saveImageMiddleware],
     editarPelícula
 );
 
