@@ -1,0 +1,395 @@
+{
+  "openapi" : "3.0.4",
+  "info" : {
+    "title" : "API Movie App",
+    "description" : "Esta API permite permite hacer la gestión de una aplicación web para la búsqueda y gestión de películas y la administración de usuarios con diferentes roles.",
+    "version" : "1.0"
+  },
+  "servers" : [ {
+    "url" : "http://puertolocalconfiguradoOentornoonline"
+  } ],
+  "tags" : [ {
+    "name" : "login",
+    "description" : "Endpoints relacionados con el inicio de sesión y creación de usuarios"
+  }, {
+    "name" : "search",
+    "description" : "Endpoint que permite al usuario con el rol user buscar películas"
+  }, {
+    "name" : "movies",
+    "description" : "Endpoint que gestiona las películas favoritas de los usuarios con rol de usuario"
+  }, {
+    "name" : "admin",
+    "description" : "CRUD relacionado con los usuarios con rol de administradores. Gestionan la BBDD."
+  } ],
+  "paths" : {
+    "/signup" : {
+      "post" : {
+        "tags" : [ "login" ],
+        "summary" : "Registro de usuario",
+        "operationId1" : "createUser",
+        "parameters" : [ {
+          "name" : "email",
+          "description" : "email de usuario",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "contrasena",
+          "description" : "contrasena de usuario",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "repetir contrasena",
+          "description" : "contrasena de usuario",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Usuario creado correctamente"
+          },
+          "401" : {
+            "description" : "Las contraseñas no coinciden"
+          },
+          "400" : {
+            "description" : "Usuario ya existe"
+          },
+          "500" : {
+            "description" : "Error al crear usuario"
+          }
+        }
+      }
+    },
+    "/login" : {
+      "post" : {
+        "tags" : [ "login" ],
+        "summary" : "Login con email y contrasena",
+        "operationId2" : "loginUser",
+        "parameters" : [ {
+          "name" : "email",
+          "description" : "email de usuario",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "contrasena",
+          "description" : "contrasena de usuario",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Login correcto"
+          },
+          "400" : {
+            "description" : "Email o contrasena incorrectos"
+          },
+          "500" : {
+            "description" : "Error al iniciar sesión"
+          }
+        }
+      }
+    },
+    "/logout" : {
+      "post" : {
+        "tags" : [ "login" ],
+        "summary" : "Cerrar sesion usuario",
+        "operationId3" : "logoutUser",
+        "responses" : {
+          "200" : {
+            "description" : "Cerrar sesion"
+          },
+          "400" : {
+            "description" : "Error al cerrar sesion"
+          }
+        }
+      }
+    },
+    "/search" : {
+      "get" : {
+        "tags" : [ "search" ],
+        "summary" : "Buscar películas",
+        "operationId" : "busquedaPeliculas",
+        "parameters" : [ {
+          "name" : "titulo pelicula",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Pelicula encontrada"
+          },
+          "404" : {
+            "description" : "No hemos encontrado ninguna pelicula con ese nombre"
+          },
+          "500" : {
+            "description" : "Error al obtener las películas"
+          }
+        }
+      }
+    },
+    "/search/:title" : {
+      "get" : {
+        "tags" : [ "search" ],
+        "summary" : "Vista detalle de la pelicula buscada",
+        "operationId" : "buscarPeliculas",
+        "parameters" : [ {
+          "name" : "titulo",
+          "description" : "titulo de la pelicula",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "url_imagen",
+          "description" : "URL de la imagen de portada",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "anio",
+          "description" : "Anio de la pelicula",
+          "schema" : {
+            "type" : "number"
+          }
+        }, {
+          "name" : "director",
+          "description" : "Director de la pelicula",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "genero",
+          "description" : "Genero de la pelicula",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "duracion",
+          "description" : "Minutos totales de la pelicula",
+          "schema" : null
+        }, {
+          "name" : "id_pelicula",
+          "description" : "ID de la pelicula",
+          "schema" : {
+            "type" : "number"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Pelicula encontrada correctamente"
+          },
+          "404" : {
+            "description" : "No se ha encontrado la pelicula"
+          },
+          "500" : {
+            "description" : "Error al encontrar la pelicula"
+          }
+        }
+      }
+    },
+    "/movies" : {
+      "get" : {
+        "tags" : [ "movies" ],
+        "summary" : "Peliculas favoritas del usuario con rol user",
+        "operationId4" : "getAllFavoritos",
+        "responses" : {
+          "200" : {
+            "description" : "Favoritos de usuario encontrados"
+          },
+          "404" : {
+            "description" : "No tienes favoritos encontrados"
+          },
+          "500" : {
+            "description" : "Error"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "movies" ],
+        "summary" : "Añadir pelicula favorita al usuario",
+        "operationId4" : "addFavorito",
+        "responses" : {
+          "200" : {
+            "description" : "Pelicula añadida correctamente a tus favoritos"
+          },
+          "404" : {
+            "description" : "La pelicula a guardar no existe"
+          },
+          "406" : {
+            "description" : "La pelicula ya existe en tus favoritos"
+          },
+          "500" : {
+            "description" : "Error"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "movies" ],
+        "summary" : "Eliminar pelicula de favoritos",
+        "operationId4" : "deleteFavorito",
+        "responses" : {
+          "200" : {
+            "description" : "Pelicula borrada correctamente"
+          },
+          "404" : {
+            "description" : "Pelicula a borrar no existe en tus favoritos"
+          },
+          "500" : {
+            "description" : "Error"
+          }
+        }
+      }
+    },
+    "/createMovie" : {
+      "post" : {
+        "tags" : [ "admin" ],
+        "summary" : "Crear pelicula",
+        "operationId" : "crearPelicula",
+        "parameters" : [ {
+          "name" : "titulo",
+          "description" : "titulo de la pelicula",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "url_imagen",
+          "description" : "URL de la imagen de portada",
+          "schema" : {
+            "type" : "string",
+            "require" : true
+          }
+        }, {
+          "name" : "anio",
+          "description" : "Anio de la pelicula",
+          "schema" : {
+            "type" : "number",
+            "require" : true
+          }
+        }, {
+          "name" : "director",
+          "description" : "Director de la pelicula",
+          "schema" : {
+            "type" : "string",
+            "require" : true
+          }
+        }, {
+          "name" : "genero",
+          "description" : "Genero de la pelicula",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "duracion",
+          "description" : "Minutos totales de la pelicula",
+          "required" : true,
+          "schema" : null
+        }, {
+          "name" : "id_pelicula",
+          "description" : "ID de la pelicula",
+          "schema" : {
+            "type" : "number",
+            "require" : true
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Pelicula creada de forma correcta"
+          },
+          "400" : {
+            "description" : "No se puede crear la pelicula porque ya existe"
+          },
+          "500" : {
+            "description" : "Ha habido un error, contacte con el administrador"
+          }
+        }
+      }
+    },
+    "/editMovie/:id" : {
+      "put" : {
+        "tags" : [ "admin" ],
+        "summary" : "Modificar pelicula",
+        "operationId" : "editarPelicula",
+        "parameters" : [ {
+          "name" : "titulo",
+          "description" : "titulo de la pelicula",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "url_imagen",
+          "description" : "URL de la imagen de portada",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "anio",
+          "description" : "Anio de la pelicula",
+          "schema" : {
+            "type" : "number"
+          }
+        }, {
+          "name" : "director",
+          "description" : "Director de la pelicula",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "genero",
+          "description" : "Genero de la pelicula",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "duracion",
+          "description" : "Minutos totales de la pelicula",
+          "schema" : null
+        }, {
+          "name" : "id_pelicula",
+          "description" : "ID de la pelicula",
+          "schema" : {
+            "type" : "number"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Pelicula modificada correctamente"
+          },
+          "404" : {
+            "description" : "Np se puede editar la película porque no existe"
+          },
+          "500" : {
+            "description" : "Ha habido un error, contacte con el administrador"
+          }
+        }
+      }
+    },
+    "/removeMovie" : {
+      "delete" : {
+        "tags" : [ "admin" ],
+        "summary" : "Eliminar pelicula",
+        "operationId" : "eliminarPelicula",
+        "responses" : {
+          "200" : {
+            "description" : "Pelicula eliminada correctamente"
+          },
+          "404" : {
+            "description" : "No se puede eliminar la pelicula porque no existe"
+          },
+          "500" : {
+            "description" : "Ha habido un problema, contacte con el administrador"
+          }
+        }
+      }
+    }
+  }
+}
